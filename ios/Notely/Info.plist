@@ -53,8 +53,8 @@
 	<false/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Nunito.ttf</string>
 		<string>TitanOne.ttf</string>
+		<string>nunito.ttf</string>
 	</array>
 </dict>
 </plist>

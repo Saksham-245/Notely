@@ -1,12 +1,15 @@
 import React from 'react';
-import {StatusBar, StyleSheet, View} from 'react-native';
+import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
 
 const AppView = ({children}) => {
   return (
-    <>
+    <SafeAreaView
+      style={{
+        flex: 1,
+      }}>
       <StatusBar barStyle={'dark-content'} backgroundColor={'#F8EEE2'} />
       <View style={styles.container}>{children}</View>
-    </>
+    </SafeAreaView>
   );
 };
 

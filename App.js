@@ -1,7 +1,6 @@
 import React from 'react';
 import AppView from './components/AppView';
-import FirstScreen from './components/firstScreen';
-import {SafeAreaView} from 'react-native';
+import FirstScreen from './components/FirstScreen';
 
 const App = () => {
   return (
