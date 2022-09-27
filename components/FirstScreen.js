@@ -3,10 +3,16 @@ import {Button, Image, StyleSheet, Text, View} from 'react-native';
 
 const FirstScreen = () => {
   return (
-    <>
+    <View style={styles.container}>
       <Text style={styles.header}>Notely</Text>
       <View style={{height: 118}} />
-      <Image source={require('../images/logo.png')} />
+      <View
+        style={{
+          marginLeft: 33,
+          marginRight: 34,
+        }}>
+        <Image source={require('../images/logo.png')} />
+      </View>
       <View
         style={{
           marginLeft: 34,
@@ -45,17 +51,23 @@ const FirstScreen = () => {
       {/*  }}>*/}
       {/*  Already have an account?*/}
       {/*</Text>*/}
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F8EEE2',
+    alignItems: 'center',
+  },
   header: {
     fontSize: 20,
     textAlign: 'center',
     fontFamily: 'TitanOne',
     fontWeight: '400',
     color: '#403B36',
+    marginTop: 18,
     lineHeight: 22.93,
   },
   body: {

@@ -1,12 +1,10 @@
 import React from 'react';
 import AppView from './components/AppView';
-import FirstScreen from './components/FirstScreen';
+import Navigation from './navigation/Navigation';
 
 const App = () => {
   return (
-    <AppView>
-      <FirstScreen />
-    </AppView>
+    <Navigation />
   );
 };
 
