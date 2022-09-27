@@ -1,9 +1,11 @@
 import React from 'react';
-import {Button, Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
+import {Button} from 'react-native-paper';
+import AppView from './AppView';
 
-const FirstScreen = () => {
+const FirstScreen = ({navigation}) => {
   return (
-    <View style={styles.container}>
+    <AppView>
       <Text style={styles.header}>Notely</Text>
       <View style={{height: 118}} />
       <View
@@ -32,35 +34,38 @@ const FirstScreen = () => {
           height: 50,
         }}
       />
-      <View style={styles.button} onC>
-        <Text
-          style={{
-            color: 'white',
-            fontSize: 20,
-            fontWeight: '900',
-            textAlign: 'center',
-            fontFamily: 'nunito',
-            lineHeight: 26,
-          }}>
-          Get Started
-        </Text>
-      </View>
+      <Button
+        style={styles.button}
+        mode={'contained'}
+        onPress={() => {
+          navigation.navigate('SignUpScreen');
+        }}>
+        Get Started
+      </Button>
+      {/*<View style={styles.button}>*/}
+      {/*  <Text*/}
+      {/*    style={{*/}
+      {/*      color: 'white',*/}
+      {/*      fontSize: 20,*/}
+      {/*      fontWeight: '900',*/}
+      {/*      textAlign: 'center',*/}
+      {/*      fontFamily: 'nunito',*/}
+      {/*      lineHeight: 26,*/}
+      {/*    }}>*/}
+      {/*    Get Started*/}
+      {/*  </Text>*/}
+      {/*</View>*/}
       {/*<Text*/}
       {/*  style={{*/}
       {/*    marginTop: 28,*/}
       {/*  }}>*/}
       {/*  Already have an account?*/}
       {/*</Text>*/}
-    </View>
+    </AppView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8EEE2',
-    alignItems: 'center',
-  },
   header: {
     fontSize: 20,
     textAlign: 'center',
@@ -100,9 +105,13 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#D9614C',
-    paddingVertical: 24,
-    paddingHorizontal: 96,
     borderRadius: 12,
+    paddingHorizontal: 50,
+    paddingVertical: 20,
+    fontSize: 20,
+    fontWeight: '900',
+    fontFamily: 'nunito',
+    lineHeight: 26,
   },
 });
 

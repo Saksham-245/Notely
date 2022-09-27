@@ -5,12 +5,7 @@ const AppView = ({children}) => {
   return (
     <>
       <StatusBar barStyle={'dark-content'} backgroundColor={'#F8EEE2'} />
-      <SafeAreaView
-        style={{
-          flex: 1,
-        }}>
-        <View style={styles.container}>{children}</View>
-      </SafeAreaView>
+      <View style={styles.container}>{children}</View>
     </>
   );
 };
