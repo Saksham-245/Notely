@@ -2,11 +2,12 @@ import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {Button} from 'react-native-paper';
 import AppView from './AppView';
+import Header from './Header';
 
 const FirstScreen = ({navigation}) => {
   return (
     <AppView>
-      <Text style={styles.header}>Notely</Text>
+      <Header />
       <View style={styles.sizedBox} />
       <View style={styles.imageContainer}>
         <Image source={require('../images/logo.png')} />
@@ -54,15 +55,6 @@ const FirstScreen = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  header: {
-    fontSize: 20,
-    textAlign: 'center',
-    fontFamily: 'TitanOne',
-    fontWeight: '400',
-    color: '#403B36',
-    marginTop: 16,
-    lineHeight: 22.93,
-  },
   sizedBox: {
     height: 118,
   },
