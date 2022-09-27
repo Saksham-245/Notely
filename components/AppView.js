@@ -1,16 +1,23 @@
 import React from 'react';
-import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
+import {StatusBar, StyleSheet, View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const AppView = ({children}) => {
   return (
     <>
       <StatusBar barStyle={'dark-content'} backgroundColor={'#F8EEE2'} />
-      <View style={styles.container}>{children}</View>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>{children}</View>
+      </SafeAreaView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#F8EEE2',
+  },
   container: {
     flex: 1,
     backgroundColor: '#F8EEE2',

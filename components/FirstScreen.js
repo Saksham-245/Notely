@@ -7,19 +7,11 @@ const FirstScreen = ({navigation}) => {
   return (
     <AppView>
       <Text style={styles.header}>Notely</Text>
-      <View style={{height: 118}} />
-      <View
-        style={{
-          marginLeft: 33,
-          marginRight: 34,
-        }}>
+      <View style={styles.sizedBox} />
+      <View style={styles.imageContainer}>
         <Image source={require('../images/logo.png')} />
       </View>
-      <View
-        style={{
-          marginLeft: 34,
-          marginRight: 33.5,
-        }}>
+      <View style={styles.textContainer}>
         <Text style={styles.textHeading}>
           World’s Safest And {'\n'}
           Largest Digital Notebook
@@ -29,11 +21,7 @@ const FirstScreen = ({navigation}) => {
           notebook. Join over {'\n'} 10M+ users already using Notely.
         </Text>
       </View>
-      <View
-        style={{
-          height: 50,
-        }}
-      />
+      <View style={styles.sizedBox2} />
       <Button
         style={styles.button}
         mode={'contained'}
@@ -72,8 +60,22 @@ const styles = StyleSheet.create({
     fontFamily: 'TitanOne',
     fontWeight: '400',
     color: '#403B36',
-    marginTop: 18,
+    marginTop: 16,
     lineHeight: 22.93,
+  },
+  sizedBox: {
+    height: 118,
+  },
+  imageContainer: {
+    marginLeft: 33,
+    marginRight: 34,
+  },
+  textContainer: {
+    marginLeft: 34,
+    marginRight: 33.5,
+  },
+  sizedBox2: {
+    height: 50,
   },
   body: {
     flex: 1,
