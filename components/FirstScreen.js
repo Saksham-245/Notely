@@ -1,6 +1,6 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
-import {Button} from 'react-native-paper';
+import {Image, StyleSheet, View} from 'react-native';
+import {Button, Text} from 'react-native-paper';
 import AppView from './AppView';
 import Header from './Header';
 
@@ -24,22 +24,25 @@ const FirstScreen = ({navigation}) => {
       </View>
       <View style={styles.sizedBox2} />
       <Button
+        mode="contained"
         style={styles.button}
-        mode={'contained'}
+        labelStyle={styles.buttonLabel}
         onPress={() => {
           navigation.navigate('SignUpScreen');
         }}>
         Get Started
       </Button>
+      <Button
+        labelStyle={styles.textLabel}
+        onPress={() => {
+          console.log('Text Button');
+        }}>
+        Already Have an Account?
+      </Button>
       {/*<View style={styles.button}>*/}
       {/*  <Text*/}
       {/*    style={{*/}
-      {/*      color: 'white',*/}
-      {/*      fontSize: 20,*/}
-      {/*      fontWeight: '900',*/}
-      {/*      textAlign: 'center',*/}
-      {/*      fontFamily: 'nunito',*/}
-      {/*      lineHeight: 26,*/}
+
       {/*    }}>*/}
       {/*    Get Started*/}
       {/*  </Text>*/}
@@ -100,12 +103,25 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#D9614C',
     borderRadius: 12,
-    paddingHorizontal: 50,
-    paddingVertical: 20,
-    fontSize: 20,
-    fontWeight: '900',
+    alignItems: 'center',
+    marginHorizontal: 28,
+  },
+  buttonLabel: {
     fontFamily: 'nunito',
-    lineHeight: 26,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    fontSize: 20,
+    marginVertical: 24,
+    marginHorizontal: 96,
+  },
+  textLabel: {
+    color: '#D9614C',
+    marginVertical: 20,
+    fontFamily: 'nunito',
+    fontSize: 16,
+    fontWeight: '800',
+    textAlign: 'center',
+    lineHeight: 20.8,
   },
 });
 
