@@ -1,8 +1,14 @@
 import React from 'react';
-import {Image, StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import AppView from '../components/AppView';
 import Header from '../components/Header';
-import {scale, verticalScale} from 'react-native-size-matters';
 import {ContainedButton} from '../components/ContainedButton';
 
 const FirstScreen = ({navigation}) => {
@@ -39,51 +45,51 @@ const FirstScreen = ({navigation}) => {
 
 const styles = StyleSheet.create({
   sizedBox: {
-    height: verticalScale(80),
+    height: Dimensions.get('window').height * 0.13,
   },
   imageContainer: {
-    marginHorizontal: scale(34),
+    marginHorizontal: 34,
   },
   textContainer: {
-    width: scale(308),
+    width: Dimensions.get('window').width * 100,
   },
   sizedBox2: {
-    height: verticalScale(50),
+    height: Dimensions.get('window').height * 0.06,
   },
   body: {
     flex: 1,
-    marginHorizontal: scale(54),
-    marginBottom: scale(28),
+    marginHorizontal: Dimensions.get('window').width * 0.4,
+    marginBottom: 28,
   },
   body2: {
-    marginHorizontal: scale(34),
+    marginHorizontal: 34,
   },
   textHeading: {
-    marginTop: scale(28),
+    marginTop: 28,
     fontFamily: 'nunito',
     fontWeight: '900',
-    fontSize: scale(24),
+    fontSize: 24,
     color: 'black',
-    lineHeight: scale(32.74),
+    lineHeight: 32.74,
     textAlign: 'center',
   },
   paragraph: {
     textAlign: 'center',
-    marginTop: scale(12),
-    fontSize: scale(16),
+    marginTop: 12,
+    fontSize: Dimensions.get('window').fontScale * 16,
     color: '#595550',
     fontWeight: '700',
     fontFamily: 'nunito',
-    lineHeight: scale(20.8),
+    lineHeight: 20.8,
   },
   textLabel: {
     color: '#D9614C',
-    marginVertical: verticalScale(20),
+    marginVertical: Dimensions.get('window').height * 0.03,
     fontFamily: 'nunito',
-    fontSize: scale(16),
+    fontSize: Dimensions.get('window').fontScale * 16,
     fontWeight: '800',
     textAlign: 'center',
-    lineHeight: scale(20.8),
+    lineHeight: 20.8,
   },
 });
 

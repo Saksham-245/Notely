@@ -1,11 +1,19 @@
 import * as React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {scale, verticalScale} from 'react-native-size-matters';
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 export const ContainedButton = ({onClick, title}) => {
   return (
     <View style={styles.containerButton}>
-      <TouchableOpacity onPress={onClick} style={styles.button}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={onClick}
+        style={styles.button}>
         <Text style={styles.buttonText}>{title}</Text>
       </TouchableOpacity>
     </View>
@@ -14,24 +22,24 @@ export const ContainedButton = ({onClick, title}) => {
 
 const styles = StyleSheet.create({
   containerButton: {
-    marginHorizontal: scale(28),
+    marginHorizontal: 28,
   },
   button: {
     backgroundColor: '#D9614C',
-    borderRadius: scale(12),
+    borderRadius: 12,
     alignItems: 'center',
-    width: scale(319),
-    marginHorizontal: scale(28),
-    paddingVertical: verticalScale(20),
-    paddingHorizontal: scale(24),
+    width: Dimensions.get('window').width * 0.88,
+    marginHorizontal: 28,
+    paddingVertical: Dimensions.get('window').height * 0.02,
+    paddingHorizontal: 24,
   },
   buttonText: {
     color: 'white',
     fontFamily: 'nunito',
     fontWeight: '900',
     textTransform: 'uppercase',
-    fontSize: scale(20),
-    lineHeight: scale(26),
+    fontSize: Dimensions.get('window').fontScale * 20,
+    lineHeight: 26,
     textAlign: 'center',
   },
 });
