@@ -1,27 +1,21 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import AppView from '../components/AppView';
 import {StyleSheet, View} from 'react-native';
 import Lottie from 'lottie-react-native';
 
 export const SplashScreen = ({navigation}) => {
-  const [authLoaded, setAuthLoaded] = useState(false);
-  const [animationLoaded, setAnimationLoaded] = useState(false);
+  let user = false;
   const ref = useRef(null);
 
-  const onAnimationFinish = () => {
-    setAnimationLoaded(true);
-  };
   useEffect(() => {
     setTimeout(() => {
-      setAuthLoaded(true);
+      if (user) {
+        navigation.replace('SignUpScreen');
+      } else {
+        navigation.replace('FirstScreen');
+      }
     }, 5000);
-  }, []);
-
-  useEffect(() => {
-    if (authLoaded && animationLoaded) {
-      navigation.replace('FirstScreen');
-    }
-  }, [authLoaded, animationLoaded, navigation]);
+  });
 
   return (
     <AppView>
@@ -32,7 +26,6 @@ export const SplashScreen = ({navigation}) => {
           style={styles.lottieView}
           loop={false}
           ref={animation => (ref.current = animation)}
-          onAnimationFinish={onAnimationFinish}
         />
       </View>
     </AppView>

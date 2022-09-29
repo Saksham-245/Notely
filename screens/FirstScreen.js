@@ -33,7 +33,7 @@ const FirstScreen = ({navigation}) => {
       <ContainedButton
         title={'Get Started'}
         onClick={() => {
-          navigation.navigate('SignUpScreen');
+          navigation.replace('SignUpScreen');
         }}
       />
       <TouchableOpacity>
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 34,
   },
   textContainer: {
-    width: Dimensions.get('window').width * 100,
+    width: 319,
   },
   sizedBox2: {
     height: Dimensions.get('window').height * 0.06,
