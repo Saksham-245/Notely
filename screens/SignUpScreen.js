@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height * 0.09,
   },
   textContainer: {
-    marginTop: Dimensions.get('window').height * 0.07,
+    marginTop: Dimensions.get('window').height * 0.05,
     marginVertical: Dimensions.get('window').width * 0.05,
   },
   textOne: {
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   },
   bottomButtons: {
     alignItems: 'center',
-    marginTop: Dimensions.get('window').height * 0.09,
+    marginTop: Dimensions.get('window').height * 0.04,
   },
   textLabel: {
     color: '#D9614C',
