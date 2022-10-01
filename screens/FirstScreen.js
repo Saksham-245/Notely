@@ -13,7 +13,7 @@ import {ContainedButton} from '../components/ContainedButton';
 
 const FirstScreen = ({navigation}) => {
   return (
-    <AppView>
+    <AppView root={styles.root}>
       <Header />
       <View style={styles.sizedBox} />
       <View style={styles.imageContainer}>
@@ -44,8 +44,11 @@ const FirstScreen = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  root: {
+    alignItems: 'center',
+  },
   sizedBox: {
-    height: Dimensions.get('window').height * 0.13,
+    height: Dimensions.get('window').height * 0.16,
   },
   imageContainer: {
     marginHorizontal: 34,
@@ -68,7 +71,7 @@ const styles = StyleSheet.create({
     marginTop: 28,
     fontFamily: 'nunito',
     fontWeight: '900',
-    fontSize: 24,
+    fontSize: Dimensions.get('window').fontScale * 24,
     color: 'black',
     lineHeight: 32.74,
     textAlign: 'center',

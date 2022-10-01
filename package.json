@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/native-stack": "^6.9.0",
+    "font-picker-react": "^3.5.2",
     "lottie-ios": "^3.4.0",
     "lottie-react-native": "^5.1.4",
     "react": "18.1.0",

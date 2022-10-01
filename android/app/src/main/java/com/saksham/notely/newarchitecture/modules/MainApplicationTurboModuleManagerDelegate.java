@@ -1,4 +1,4 @@
-package com.sakshammathur.notely.newarchitecture.modules;
+package com.saksham.notely.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

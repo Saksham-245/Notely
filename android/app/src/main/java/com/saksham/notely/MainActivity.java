@@ -1,4 +1,4 @@
-package com.sakshammathur.notely;
+package com.saksham.notely;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
