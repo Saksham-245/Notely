@@ -37,11 +37,7 @@ function LoginScreen({navigation}) {
             placeholderTextColor={'#595550'}
           />
         </View>
-        <View
-          style={{
-            alignItems: 'center',
-            marginTop: Dimensions.get('window').height * 0.2,
-          }}>
+        <View style={styles.bottomButtons}>
           <ContainedButton title={'Login'} />
           <TouchableOpacity onPress={() => navigation.replace('SignUpScreen')}>
             <Text style={styles.textLabel}>
@@ -109,6 +105,10 @@ const styles = StyleSheet.create({
     fontFamily: 'nunito',
     fontWeight: '700',
     marginBottom: Dimensions.get('window').height * 0.03,
+  },
+  bottomButtons: {
+    alignItems: 'center',
+    marginTop: Dimensions.get('window').height * 0.2,
   },
   textLabel: {
     color: '#D9614C',
