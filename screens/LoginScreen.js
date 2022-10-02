@@ -1,6 +1,4 @@
 import React from 'react';
-import AppView from '../components/AppView';
-import Header from '../components/Header';
 import {
   Dimensions,
   StyleSheet,
@@ -9,34 +7,26 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {ContainedButton} from '../components/ContainedButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import AppView from '../components/AppView';
+import Header from '../components/Header';
+import {ContainedButton} from '../components/ContainedButton';
 
-export const SignUpScreen = ({navigation}) => {
+function LoginScreen({navigation}) {
   return (
     <AppView>
       <KeyboardAwareScrollView>
         <Header />
         <View style={styles.textContainer}>
-          <Text style={styles.textOne}>Create a free account</Text>
-          <Text style={styles.textTwo}>
-            Join Notely for free. Create and share {'\n'} unlimited notes with
-            your friends.
-          </Text>
+          <Text style={styles.textOne}>Login into Your Account</Text>
+          <Text style={styles.textTwo}>View all your Notes.</Text>
         </View>
-
         <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Full Name</Text>
-          <TextInput
-            style={styles.editInput}
-            placeholder={'Enter your Full Name'}
-            placeholderTextColor={'#595550'}
-          />
           <Text style={styles.inputLabel}>Email Address</Text>
           <TextInput
             style={styles.editInput}
-            keyboardType={'email-address'}
-            placeholder={'Enter your Email Address'}
+            placeholder={'Enter your Email'}
+            keyboardType="email-address"
             placeholderTextColor={'#595550'}
           />
           <Text style={styles.inputLabel}>Password</Text>
@@ -47,26 +37,24 @@ export const SignUpScreen = ({navigation}) => {
             placeholderTextColor={'#595550'}
           />
         </View>
-        <View style={styles.bottomButtons}>
-          <ContainedButton
-            title={'Create Account'}
-            onClick={() => {
-              navigation.navigate('HomeScreen');
-            }}
-          />
-          <TouchableOpacity onPress={() => navigation.replace('LoginScreen')}>
-            <Text style={styles.textLabel}>Already Have an Account?</Text>
+        <View
+          style={{
+            alignItems: 'center',
+            marginTop: Dimensions.get('window').height * 0.2,
+          }}>
+          <ContainedButton title={'Login'} />
+          <TouchableOpacity onPress={() => navigation.replace('SignUpScreen')}>
+            <Text style={styles.textLabel}>
+              Don't have an Account? Sign Up Here
+            </Text>
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
     </AppView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  root: {
-    alignItems: 'center',
-  },
   sizedBox: {
     height: Dimensions.get('window').height * 0.09,
   },
@@ -92,9 +80,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: 22,
   },
-  sizedBox2: {
-    marginTop: 52,
-  },
   inputContainer: {
     marginTop: Dimensions.get('window').height * 0.04,
     paddingHorizontal: Dimensions.get('window').width * 0.03,
@@ -117,17 +102,13 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#F2E5D5',
+    paddingHorizontal: 20,
     color: '#595550',
-    paddingHorizontal: 19,
     paddingVertical: 16,
     marginTop: 8,
     fontFamily: 'nunito',
     fontWeight: '700',
     marginBottom: Dimensions.get('window').height * 0.03,
-  },
-  bottomButtons: {
-    alignItems: 'center',
-    marginTop: Dimensions.get('window').height * 0.04,
   },
   textLabel: {
     color: '#D9614C',
@@ -138,7 +119,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20.8,
   },
-  container: {
-    flex: 1,
-  },
 });
+
+export default LoginScreen;

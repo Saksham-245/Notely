@@ -1,9 +1,8 @@
 import React from 'react';
-import {Text} from 'react-native';
-import {StyleSheet} from 'react-native';
+import {Text, StyleSheet} from 'react-native';
 
-const Header = () => {
-  return <Text style={styles.header}>Notely</Text>;
+const Header = ({title = 'Notely'}) => {
+  return <Text style={styles.header}>{title}</Text>;
 };
 
 const styles = StyleSheet.create({

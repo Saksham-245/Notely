@@ -4,20 +4,18 @@ import {StyleSheet, View} from 'react-native';
 import Lottie from 'lottie-react-native';
 
 export const SplashScreen = ({navigation}) => {
-  let user = true;
+  let user = false;
   const ref = useRef(null);
 
   useEffect(() => {
     setTimeout(() => {
-      navigation.replace('SignUpScreen');
-      // if (user) {
-      //   navigation.replace('SignUpScreen');
-      // } else {
-      //   navigation.replace('FirstScreen');
-      // }
+      if (user) {
+        navigation.replace('SignUpScreen');
+      } else {
+        navigation.replace('FirstScreen');
+      }
     }, 5000);
   });
-
   return (
     <AppView>
       <View style={styles.root}>

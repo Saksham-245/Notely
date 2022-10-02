@@ -37,9 +37,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontFamily: 'nunito',
     fontWeight: '900',
-    textTransform: 'uppercase',
     fontSize: Dimensions.get('window').fontScale * 20,
-    lineHeight: 26,
+    letterSpacing: Dimensions.get('window').width * 0.01,
     textAlign: 'center',
   },
 });

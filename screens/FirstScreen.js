@@ -36,7 +36,8 @@ const FirstScreen = ({navigation}) => {
           navigation.replace('SignUpScreen');
         }}
       />
-      <TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.replace('LoginScreen')}>
         <Text style={styles.textLabel}>Already Have an Account?</Text>
       </TouchableOpacity>
     </AppView>
