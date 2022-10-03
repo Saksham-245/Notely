@@ -32,6 +32,7 @@ const FirstScreen = ({navigation}) => {
       <View style={styles.sizedBox2} />
       <ContainedButton
         title={'Get Started'}
+        buttonLabel={styles.buttonLabel}
         onClick={() => {
           navigation.replace('SignUpScreen');
         }}
@@ -70,8 +71,7 @@ const styles = StyleSheet.create({
   },
   textHeading: {
     marginTop: 28,
-    fontFamily: 'nunito',
-    fontWeight: '900',
+    fontFamily: 'Nunito-Black',
     fontSize: Dimensions.get('window').fontScale * 24,
     color: 'black',
     lineHeight: 32.74,
@@ -82,18 +82,19 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: Dimensions.get('window').fontScale * 16,
     color: '#595550',
-    fontWeight: '700',
-    fontFamily: 'nunito',
+    fontFamily: 'Nunito-Bold',
     lineHeight: 20.8,
   },
   textLabel: {
     color: '#D9614C',
     marginVertical: Dimensions.get('window').height * 0.03,
-    fontFamily: 'nunito',
+    fontFamily: 'Nunito-ExtraBold',
     fontSize: Dimensions.get('window').fontScale * 16,
-    fontWeight: '800',
     textAlign: 'center',
     lineHeight: 20.8,
+  },
+  buttonLabel: {
+    textTransform: 'uppercase',
   },
 });
 

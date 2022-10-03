@@ -15,7 +15,7 @@ import {ContainedButton} from '../components/ContainedButton';
 function LoginScreen({navigation}) {
   return (
     <AppView>
-      <KeyboardAwareScrollView>
+      <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
         <Header />
         <View style={styles.textContainer}>
           <Text style={styles.textOne}>Login into Your Account</Text>
@@ -59,8 +59,7 @@ const styles = StyleSheet.create({
     marginVertical: Dimensions.get('window').width * 0.05,
   },
   textOne: {
-    fontFamily: 'nunito',
-    fontWeight: '900',
+    fontFamily: 'Nunito-Black',
     fontSize: Dimensions.get('window').fontScale * 24,
     color: '#403B36',
     fontStyle: 'normal',
@@ -72,8 +71,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: Dimensions.get('window').height * 0.02,
     fontSize: Dimensions.get('window').fontScale * 16,
-    fontFamily: 'nunito',
-    fontWeight: '700',
+    fontFamily: 'Nunito-Bold',
     lineHeight: 22,
   },
   inputContainer: {
@@ -82,10 +80,9 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     marginHorizontal: 5,
-    fontWeight: 'bold',
     fontSize: Dimensions.get('window').fontScale * 14,
     color: '#403B36',
-    fontFamily: 'nunito',
+    fontFamily: 'Nunito-Bold',
     lineHeight: 15,
     letterSpacing: 0.5,
     fontStyle: 'normal',
@@ -102,8 +99,7 @@ const styles = StyleSheet.create({
     color: '#595550',
     paddingVertical: 16,
     marginTop: 8,
-    fontFamily: 'nunito',
-    fontWeight: '700',
+    fontFamily: 'Nunito-Bold',
     marginBottom: Dimensions.get('window').height * 0.03,
   },
   bottomButtons: {
@@ -113,9 +109,8 @@ const styles = StyleSheet.create({
   textLabel: {
     color: '#D9614C',
     marginVertical: Dimensions.get('window').height * 0.03,
-    fontFamily: 'nunito',
+    fontFamily: 'Nunito-ExtraBold',
     fontSize: Dimensions.get('window').fontScale * 16,
-    fontWeight: '800',
     textAlign: 'center',
     lineHeight: 20.8,
   },

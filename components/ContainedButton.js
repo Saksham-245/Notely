@@ -7,14 +7,16 @@ import {
   View,
 } from 'react-native';
 
-export const ContainedButton = ({onClick, title}) => {
+export const ContainedButton = ({onClick, title, buttonLabel}) => {
   return (
     <View style={styles.containerButton}>
       <TouchableOpacity
         activeOpacity={1}
         onPress={onClick}
         style={styles.button}>
-        <Text style={styles.buttonText}>{title}</Text>
+        <Text style={[styles.buttonText, buttonLabel && buttonLabel]}>
+          {title}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -35,10 +37,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontFamily: 'nunito',
-    fontWeight: '900',
+    fontFamily: 'Nunito-Black',
     fontSize: Dimensions.get('window').fontScale * 20,
-    letterSpacing: Dimensions.get('window').width * 0.01,
+    letterSpacing: 2,
     textAlign: 'center',
   },
 });
