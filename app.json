@@ -1,10 +1,43 @@
 {
   "expo": {
-    "scheme": "acme",
+    "scheme": "notely",
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Notely to access your photos to upload images as profile picture"
+        }
+      ]
     ],
-    "name": "notely",
-    "slug": "notely"
+    "name": "Notely",
+    "slug": "notely",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "android": {
+      "package": "com.sakshammathur.notely",
+      "splash": {
+        "resizeMode": "contain",
+        "backgroundColor": "#F8EEE2",
+        "width": 100,
+        "height": 100,
+        "image": "./assets/images/splash.png"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.sakshammathur.notely",
+      "splash": {
+        "resizeMode": "contain",
+        "width": 100,
+        "height": 100,
+        "backgroundColor": "#F8EEE2",
+        "image": "./assets/images/splash.png"
+      }
+    }
   }
 }
