@@ -4,6 +4,7 @@ import NoteScreen from "../../../src/components/NoteScreen";
 import { createNote } from "../../../src/api/http";
 import { showMessage } from "react-native-flash-message";
 import { Keyboard } from "react-native";
+import { useUserInfo } from "../../../src/hooks/useUserInfo";
 
 export default function CreateNote() {
   const router = useRouter();
@@ -14,7 +15,7 @@ export default function CreateNote() {
       const response = await createNote(
         values.title,
         values.content,
-        userInfo?.id
+        useUserInfo?.id
       );
       if (response?.s) {
         // Navigate back first

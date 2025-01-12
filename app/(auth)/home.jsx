@@ -206,7 +206,7 @@ export default function Home() {
     if (!isLoadingMore) return null;
     return (
       <View style={{ paddingVertical: 20 }}>
-        <ActivityIndicator size="small" color={"#000"} />
+        <ActivityIndicator size="small" color={AppColors.buttonColor} />
       </View>
     );
   };
@@ -339,7 +339,7 @@ export default function Home() {
             >
               <ActivityIndicator
                 size="large"
-                color={Platform.OS === "ios" ? "#000" : "#fff"}
+                color={AppColors.buttonColor}
               />
             </View>
           )}

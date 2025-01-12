@@ -23,17 +23,16 @@ import { uploadImage } from "../../../src/api/http";
 import { showMessage } from "react-native-flash-message";
 import * as ImageManipulator from "expo-image-manipulator";
 import { useAuth } from "../../../src/context/AuthContext";
-import { useUserInfo } from "../../../src/hooks/useUserInfo";
+import { AppColors } from "../../../src/colors/AppColors";
 
 export default function EditProfile() {
   const router = useRouter();
-  const { userInfo } = useUserInfo();
+  const { userInfo, updateUserInfo } = useAuth();
   const [imageLoading, setImageLoading] = useState(false);
   const formRef = useRef(null);
-  const { updateUserInfo } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleImagePicker = async (setFieldValue) => {
-    setImageLoading(true);
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ["images"],
@@ -50,14 +49,16 @@ export default function EditProfile() {
         );
 
         const response = await uploadImage(manipulatedImage.uri);
-
+        setImageLoading(true);
         if (response.s) {
           setFieldValue("profile_picture", response?.url);
+          setImageLoading(false);
           showMessage({
             message: response?.message,
             type: "success",
           });
         } else {
+          setImageLoading(false);
           showMessage({
             message: response?.message,
             type: "danger",
@@ -75,24 +76,52 @@ export default function EditProfile() {
   };
 
   const handleSubmit = async (values) => {
-    await updateUserInfo(userInfo?.id, values.fullName, values.email, values.profile_picture).then((response) => {
+    if (!formRef.current?.dirty) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await updateUserInfo(
+        userInfo?.id, 
+        values.fullName, 
+        values.email, 
+        values.profile_picture
+      );
+      
       if (response.s) {
         showMessage({
-          message: response?.message,
+          message: response.message,
           type: "success"
+        });
+        
+        formRef.current?.resetForm({
+          values: {
+            fullName: values.fullName,
+            email: values.email,
+            profile_picture: values.profile_picture
+          },
+          isDirty: false
         });
       } else {
         showMessage({
-          message: response?.message,
+          message: response.message,
           type: "danger"
         });
       }
-    });
+    } catch (error) {
+      showMessage({
+        message: error.message || "An error occurred",
+        type: "danger"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   if (!userInfo) {
     return (
       <MainContainer>
-        <ActivityIndicator size="large" color="#000" />
+        <ActivityIndicator size="large" color={AppColors.buttonColor} />
       </MainContainer>
     );
   }
@@ -150,7 +179,7 @@ export default function EditProfile() {
         >
           <View style={styles.container}>
             <Formik
-              enableReinitialize={true}
+              enableReinitialize={false}
               innerRef={formRef}
               validate={validateForm}
               initialValues={{
@@ -182,7 +211,7 @@ export default function EditProfile() {
                       <View style={styles.formContainer}>
                         <View style={styles.formGroup}>
                           {imageLoading ? (
-                            <ActivityIndicator size="large" color="#000" />
+                            <ActivityIndicator size="large" color={AppColors.buttonColor} />
                           ) : (
                             <TouchableOpacity
                               onPress={() => handleImagePicker(setFieldValue)}
@@ -243,8 +272,8 @@ export default function EditProfile() {
                     </ScrollView>
                     <View style={styles.buttonContainer}>
                       <CustomOrangeButton
-                        disabled={!isValid || !dirty}
-                        title="Update"
+                        disabled={!isValid || !dirty || isSubmitting}
+                        title={isSubmitting ? "Updating..." : "Update"}
                         onPress={handleSubmit}
                       />
                     </View>

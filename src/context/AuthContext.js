@@ -13,9 +13,10 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const userInfo = await AsyncStorage.getItem('userInfo');
-        if (userInfo) {
-          const parsedInfo = JSON.parse(userInfo);
+        const storedUserInfo = await AsyncStorage.getItem('userInfo');
+        if (storedUserInfo) {
+          const parsedInfo = JSON.parse(storedUserInfo);
+          setUserInfo(parsedInfo);
           if (parsedInfo.token) {
             setAuthToken(parsedInfo.token);
             setIsAuthenticated(true);
@@ -37,6 +38,7 @@ export const AuthProvider = ({ children }) => {
       await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
       setAuthToken(userInfo.token);
       setIsAuthenticated(true);
+      setUserInfo(userInfo);
     } finally {
       setIsLoading(false);
     }
@@ -57,14 +59,22 @@ export const AuthProvider = ({ children }) => {
         };
         
         await AsyncStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+        
         setUserInfo(updatedUserInfo);
         
-        return response;
+        return {
+          s: true,
+          message: response.message,
+          user: updatedUserInfo
+        };
       } else {
         throw new Error(response?.message);
       }
     } catch (error) {
-      throw error;
+      return {
+        s: false,
+        message: error.message
+      };
     }
   };
 

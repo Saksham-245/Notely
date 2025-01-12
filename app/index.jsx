@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import CustomAppBar from "../src/components/CustomAppBar";
 import { AppColors } from "../src/colors/AppColors";
@@ -6,10 +6,10 @@ import CustomOrangeButton from "../src/components/CustomOrangeButton";
 import TextButton from "../src/components/TextButton";
 import { useRouter } from "expo-router";
 import MainContainer from "../src/components/MainContainer";
-import { PaperProvider } from "react-native-paper";
 
 export default function Index() {
   const router = useRouter();
+  
   return (
     <View style={{ flex: 1 }}>
       <CustomAppBar

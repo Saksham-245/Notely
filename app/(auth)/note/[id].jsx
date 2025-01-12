@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getNoteById, updateNote } from "../../../src/api/http";
 import NoteScreen from "../../../src/components/NoteScreen";
 import { showMessage } from "react-native-flash-message";
+import { useUserInfo } from "../../../src/hooks/useUserInfo";
 
 export default function ViewNote() {
   const { id } = useLocalSearchParams();

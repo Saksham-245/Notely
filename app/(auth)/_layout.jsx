@@ -1,8 +1,7 @@
 import { Drawer } from "expo-router/drawer";
-import React, { useCallback, useRef, useEffect } from "react";
-import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useRef } from "react";
 import { AppColors } from "../../src/colors/AppColors";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import PremiumIcon from "../../src/icons/premium_icon";
@@ -10,7 +9,7 @@ import EditIcon from "../../src/icons/edit_icon";
 import LogoutIcon from "../../src/icons/logout_icon";
 import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useUserInfo } from "../../src/hooks/useUserInfo";
+import { useAuth } from "../../src/context/AuthContext";
 
 export default function DrawerLayout() {
   return (
@@ -30,22 +29,25 @@ export default function DrawerLayout() {
 }
 
 function DrawerContent() {
-  const { userInfo, getUserInfo } = useUserInfo();
+  const { userInfo, isLoading } = useAuth();
   const router = useRouter();
   const bottomSheetModalRef = useRef(null);
   
-  useFocusEffect(
-    useCallback(() => {
-      getUserInfo();
-    }, [])
-  );
+  // Show loading state while initializing
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={AppColors.buttonColor} />
+      </View>
+    );
+  }
 
-  useEffect(() => {
-    getUserInfo();
-  }, [userInfo?.name, userInfo?.email, userInfo?.profile_picture]);
+  // Handle case when userInfo is not available
+  if (!userInfo) {
+    return null;
+  }
 
   const handlePresentModalPress = useCallback(() => {
-    // navigation.toggleDrawer();
     bottomSheetModalRef.current?.present();
   }, []);
 
@@ -78,7 +80,9 @@ function DrawerContent() {
             }}
           >
             <Image
-              source={{ uri: userInfo?.profile_picture }}
+              source={{ 
+                uri: userInfo?.profile_picture 
+              }}
               style={styles.image}
             />
             <View style={styles.textContainer}>
@@ -110,7 +114,6 @@ function DrawerContent() {
           >
             <View style={styles.bottomSheetContent}>
               <Text style={styles.premiumTitle}>Premium Features</Text>
-              {/* Add your premium content here */}
             </View>
           </BottomSheetModal>
         </SafeAreaView>
@@ -164,5 +167,11 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Black",
     textAlign: "center",
     marginBottom: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: AppColors.scaffoldBackgroundColor,
   },
 });

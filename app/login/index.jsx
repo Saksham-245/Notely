@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -25,6 +25,7 @@ import { useAuth } from "../../src/context/AuthContext";
 export default function Login() {
   const router = useRouter();
   const { setLogin, setLogout } = useAuth();
+  const [response, setResponse] = useState(null);
 
   const validate = (values) => {
     const errors = {};
@@ -39,28 +40,35 @@ export default function Login() {
 
   const handleLogin = async (values) => {
     try {
-      const response = await login(values.email, values.password);            
+      const response = await login(values.email, values.password);
+      setResponse(response);
       if (response?.s && response?.token) {
         const userInfo = {
           ...response.user,
-          token: response.token
-        };        
+          token: response.token,
+        };
         setAuthToken(response.token);
         setLogin(userInfo);
         router.replace("/(auth)/home");
       } else {
-        showMessage({
-          message: response.message,
-          type: "danger",
-        });
-
+        if (response.status === 401) {
+          showMessage({
+            message: "Invalid credentials",
+            type: "danger",
+          });
+        } else {
+          showMessage({
+            message: "Something went wrong",
+            type: "danger",
+          });
+        }
       }
     } catch (error) {
       showMessage({
-        message: error.message,
+        message: error?.message,
         type: "danger",
       });
-    } 
+    }
   };
 
   return (
@@ -156,9 +164,7 @@ export default function Login() {
                         secureTextEntry={true}
                         placeholder="Enter your password"
                         placeholderTextColor={
-                          errors.password && touched.password
-                            ? "red"
-                            : "gray"
+                          errors.password && touched.password ? "red" : "gray"
                         }
                       />
                       {errors.password && touched.password && (
