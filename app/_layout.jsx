@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import {
+  Nunito_600SemiBold,
   Nunito_700Bold,
   Nunito_800ExtraBold,
   Nunito_900Black,
@@ -11,6 +12,8 @@ import {
 } from "@expo-google-fonts/dev";
 import FlashMessage from "react-native-flash-message";
 import { AuthProvider, useAuth } from "../src/context/AuthContext";
+import { BottomSheetProvider } from '../src/context/BottomSheetContext';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -54,6 +57,7 @@ export default function Layout() {
     "Nunito-Bold": Nunito_700Bold,
     "Nunito-Black": Nunito_900Black,
     "Nunito-ExtraBold": Nunito_800ExtraBold,
+    "Nunito-SemiBold": Nunito_600SemiBold,
   });
 
   useEffect(() => {
@@ -67,12 +71,16 @@ export default function Layout() {
   }
 
   return (
-    <AuthProvider>
-      <PaperProvider>
-        <StatusBar style="dark" backgroundColor="transparent" />
-        <RootLayoutNav />
-        <FlashMessage position="bottom" />
-      </PaperProvider>
-    </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <PaperProvider>
+          <BottomSheetProvider>
+            <StatusBar style="dark" backgroundColor="transparent" />
+            <RootLayoutNav />
+            <FlashMessage position="bottom" />
+          </BottomSheetProvider>
+        </PaperProvider>
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 }

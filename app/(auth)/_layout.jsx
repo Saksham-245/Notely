@@ -1,5 +1,5 @@
 import { Drawer } from "expo-router/drawer";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { AppColors } from "../../src/colors/AppColors";
 import { Image, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -7,9 +7,8 @@ import { useRouter } from "expo-router";
 import PremiumIcon from "../../src/icons/premium_icon";
 import EditIcon from "../../src/icons/edit_icon";
 import LogoutIcon from "../../src/icons/logout_icon";
-import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useAuth } from "../../src/context/AuthContext";
+import { useBottomSheet } from "../../src/context/BottomSheetContext";
 
 export default function DrawerLayout() {
   return (
@@ -31,8 +30,17 @@ export default function DrawerLayout() {
 function DrawerContent() {
   const { userInfo, isLoading } = useAuth();
   const router = useRouter();
-  const bottomSheetModalRef = useRef(null);
+  const { openPremiumSheet } = useBottomSheet();
+  const drawerRef = useRef(null);
   
+  const handlePremiumPress = () => {
+    // Use router to close drawer
+    router.back();
+    setTimeout(() => {
+      openPremiumSheet();
+    }, 300);
+  };
+
   // Show loading state while initializing
   if (isLoading) {
     return (
@@ -47,15 +55,11 @@ function DrawerContent() {
     return null;
   }
 
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-
   const drawerItems = [
     {
       title: "Buy Premium",
       icon: <PremiumIcon />,
-      onPress: handlePresentModalPress,
+      onPress: handlePremiumPress,
     },
     {
       title: "Edit Profile",
@@ -65,60 +69,49 @@ function DrawerContent() {
     {
       title: "Logout",
       icon: <LogoutIcon />,
+      onPress: () => {/* handle logout */},
     },
   ];
 
-  return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <BottomSheetModalProvider>
-        <SafeAreaView style={{ flex: 1 }}>
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: 10,
-            }}
-          >
-            <Image
-              source={{ 
-                uri: userInfo?.profile_picture 
-              }}
-              style={styles.image}
-            />
-            <View style={styles.textContainer}>
-              <Text style={styles.username}>{userInfo?.name}</Text>
-              <Text style={styles.email}>{userInfo?.email}</Text>
-            </View>
-          </View>
-          <View style={styles.drawerContainer}>
-            {drawerItems.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={item.onPress}
-                activeOpacity={1}
-              >
-                <View style={styles.drawerItem}>
-                  {item.icon}
-                  <Text style={styles.drawerItemTitle}>{item.title}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
+  useEffect(() => {
+    openPremiumSheet();
+  },[])
 
-          <BottomSheetModal
-            ref={bottomSheetModalRef}
-            snapPoints={["100%"]}
-            backgroundStyle={{ backgroundColor: AppColors.scaffoldBackgroundColor }}
-            enablePanDownToClose={true}
-            index={0}
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: 10,
+        }}
+      >
+        <Image
+          source={{ 
+            uri: userInfo?.profile_picture 
+          }}
+          style={styles.image}
+        />
+        <View style={styles.textContainer}>
+          <Text style={styles.username}>{userInfo?.name}</Text>
+          <Text style={styles.email}>{userInfo?.email}</Text>
+        </View>
+      </View>
+      <View style={styles.drawerContainer}>
+        {drawerItems.map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={item.onPress}
+            activeOpacity={0.7}
           >
-            <View style={styles.bottomSheetContent}>
-              <Text style={styles.premiumTitle}>Premium Features</Text>
+            <View style={styles.drawerItem}>
+              {item.icon}
+              <Text style={styles.drawerItemTitle}>{item.title}</Text>
             </View>
-          </BottomSheetModal>
-        </SafeAreaView>
-      </BottomSheetModalProvider>
-    </GestureHandlerRootView>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </SafeAreaView>
   );
 }
 
