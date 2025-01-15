@@ -22,11 +22,11 @@
     "android": {
       "package": "com.sakshammathur.notely",
       "splash": {
-        "resizeMode": "contain",
         "backgroundColor": "#F8EEE2",
         "width": 100,
         "height": 100,
-        "image": "./assets/images/splash.png"
+        "resizeMode": "contain",
+        "image": "./assets/images/icon.png"
       }
     },
     "ios": {
@@ -36,7 +36,7 @@
         "width": 100,
         "height": 100,
         "backgroundColor": "#F8EEE2",
-        "image": "./assets/images/splash.png"
+        "image": "./assets/images/icon.png"
       }
     }
   }

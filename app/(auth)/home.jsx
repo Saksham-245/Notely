@@ -43,7 +43,6 @@ export default function Home() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
 
   const params = useLocalSearchParams();
 
@@ -261,7 +260,7 @@ export default function Home() {
         <MainContainer mainContainerStyle={{ flex: 1 }}>
           {!openSearch && (
             <CustomAppBar
-              title={notes.length > 0 ? "Recent Notes" : "All Notes"}
+              title={"All Notes"}
               titleStyle={{ fontSize: 16, fontFamily: "Nunito-Black" }}
               leftContent={
                 <Appbar.Action

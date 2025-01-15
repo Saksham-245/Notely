@@ -6,10 +6,17 @@ import CustomOrangeButton from "../src/components/CustomOrangeButton";
 import TextButton from "../src/components/TextButton";
 import { useRouter } from "expo-router";
 import MainContainer from "../src/components/MainContainer";
+import { useAuth } from "../src/context/AuthContext";
 
 export default function Index() {
   const router = useRouter();
-  
+  const { setLoginRoute } = useAuth();
+
+  const handleLoginPress = async () => {
+    await setLoginRoute(true);
+    router.push("/login");
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <CustomAppBar
@@ -28,10 +35,10 @@ export default function Index() {
         />
         <View style={styles.textContainer}>
           <Text style={styles.title}>
-            World’s Safest And Largest Digital Notebook
+            World's Safest And Largest Digital Notebook
           </Text>
           <Text style={styles.subtitle}>
-            Notely is the world’s safest, largest and intelligent digital
+            Notely is the world's safest, largest and intelligent digital
             notebook. Join over 10M+ users already using Notely.
           </Text>
         </View>
@@ -42,7 +49,7 @@ export default function Index() {
           onPress={() => router.push("/signup")}
         />
         <TextButton
-          onPress={() => router.push("/login")}
+          onPress={handleLoginPress}
           title={"Already have an account?"}
         />
       </View>
@@ -78,4 +85,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 100,
   },
 });
-

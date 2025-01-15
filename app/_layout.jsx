@@ -18,10 +18,10 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, isLoginRoute } = useAuth();
   const router = useRouter();
   const segments = useSegments();
-  const [initialized, setInitialized] = useState(false);  
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     setInitialized(true);
@@ -39,10 +39,10 @@ function RootLayoutNav() {
       }
     } else {
       if (!isAuthScreen) {
-        router.replace("/");
+        router.replace(isLoginRoute ? "/login" : "/");
       }
     }
-  }, [initialized, isAuthenticated, segments, isLoading]);
+  }, [initialized, isAuthenticated, segments, isLoading, isLoginRoute]);
 
   if (isLoading) {
     return null;

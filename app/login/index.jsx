@@ -24,7 +24,7 @@ import { useAuth } from "../../src/context/AuthContext";
 
 export default function Login() {
   const router = useRouter();
-  const { setLogin, setLogout } = useAuth();
+  const { setLogin, setLogout, setLoginRoute } = useAuth();
   const [response, setResponse] = useState(null);
 
   const validate = (values) => {
@@ -69,6 +69,11 @@ export default function Login() {
         type: "danger",
       });
     }
+  };
+
+  const handleSignupPress = async () => {
+    await setLoginRoute(false);
+    router.push("/signup");
   };
 
   return (
@@ -180,7 +185,7 @@ export default function Login() {
                       disabled={!dirty || !isValid}
                     />
                     <TextButton
-                      onPress={() => router.push("/signup")}
+                      onPress={handleSignupPress}
                       title={"Don't have an account?"}
                     />
                   </View>

@@ -9,11 +9,16 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
+  const [isLoginRoute, setIsLoginRoute] = useState(false);
 
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const storedUserInfo = await AsyncStorage.getItem('userInfo');
+        const [storedUserInfo, storedLoginRoute] = await Promise.all([
+          AsyncStorage.getItem('userInfo'),
+          AsyncStorage.getItem('isLoginRoute')
+        ]);
+
         if (storedUserInfo) {
           const parsedInfo = JSON.parse(storedUserInfo);
           setUserInfo(parsedInfo);
@@ -22,6 +27,8 @@ export const AuthProvider = ({ children }) => {
             setIsAuthenticated(true);
           }
         }
+
+        setIsLoginRoute(storedLoginRoute === 'true');
       } catch (error) {
         console.error("Error initializing auth:", error);
       } finally {
@@ -50,18 +57,18 @@ export const AuthProvider = ({ children }) => {
       if (response.s) {
         const currentUserInfo = await AsyncStorage.getItem('userInfo');
         const parsedCurrentInfo = JSON.parse(currentUserInfo);
-        
+
         const updatedUserInfo = {
           ...parsedCurrentInfo,
           name: fullName,
           email: email,
           profile_picture: profilePicture
         };
-        
+
         await AsyncStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
-        
+
         setUserInfo(updatedUserInfo);
-        
+
         return {
           s: true,
           message: response.message,
@@ -78,30 +85,43 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const setLoginRoute = async (value) => {
+    try {
+      await AsyncStorage.setItem('isLoginRoute', value.toString());
+      setIsLoginRoute(value);
+    } catch (error) {
+      console.error("Error setting login route:", error);
+    }
+  };
+
   const setLogout = async () => {
     setIsLoading(true);
     try {
       await AsyncStorage.removeItem('userInfo');
+      await AsyncStorage.setItem('isLoginRoute', 'true');
       setAuthToken(null);
       setIsAuthenticated(false);
+      setIsLoginRoute(true);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      isAuthenticated, 
+    <AuthContext.Provider value={{
+      isAuthenticated,
       isLoading,
-      setLogin, 
+      setLogin,
       setLogout,
       updateUserInfo,
       userInfo,
-      setUserInfo
+      setUserInfo,
+      isLoginRoute,
+      setLoginRoute
     }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(AuthContext); 
+export const useAuth = () => useContext(AuthContext);

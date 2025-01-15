@@ -3,8 +3,6 @@ import React, {
   useContext,
   useCallback,
   useState,
-  useRef,
-  useMemo,
 } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { AppColors } from "../colors/AppColors";

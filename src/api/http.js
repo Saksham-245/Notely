@@ -1,7 +1,8 @@
 import axios from "axios";
 import { Platform } from "react-native";
+import { router } from 'expo-router';
 
-export const API_URL = Platform.OS === 'android' && process.env.NODE_ENV === 'development' 
+export const API_URL = Platform.OS === 'android' && process.env.NODE_ENV === 'development'
   ? process.env.EXPO_PUBLIC_API_URL.replace('localhost', '10.0.2.2')
   : process.env.EXPO_PUBLIC_API_URL;
 
@@ -15,6 +16,20 @@ export const http = axios.create({
       "Origin, Content-Type, Accept, Authorization",
   },
 });
+
+// Add response interceptor
+http.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Remove auth token
+      delete http.defaults.headers.common["Authorization"];
+      // Redirect to login
+      router.replace('/login');
+    }
+    return Promise.reject(error);
+  }
+);
 
 export const setAuthToken = (token) => {
   http.defaults.headers.common["Authorization"] = `Bearer ${token}`;

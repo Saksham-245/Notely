@@ -1,7 +1,14 @@
 import { Drawer } from "expo-router/drawer";
 import React, { useCallback, useEffect, useRef } from "react";
 import { AppColors } from "../../src/colors/AppColors";
-import { Image, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import PremiumIcon from "../../src/icons/premium_icon";
@@ -9,6 +16,8 @@ import EditIcon from "../../src/icons/edit_icon";
 import LogoutIcon from "../../src/icons/logout_icon";
 import { useAuth } from "../../src/context/AuthContext";
 import { useBottomSheet } from "../../src/context/BottomSheetContext";
+import { logout } from "../../src/api/http";
+import { showMessage } from "react-native-flash-message";
 
 export default function DrawerLayout() {
   return (
@@ -28,11 +37,11 @@ export default function DrawerLayout() {
 }
 
 function DrawerContent() {
-  const { userInfo, isLoading } = useAuth();
+  const { userInfo, isLoading, setLogout } = useAuth();
   const router = useRouter();
   const { openPremiumSheet } = useBottomSheet();
   const drawerRef = useRef(null);
-  
+
   const handlePremiumPress = () => {
     // Use router to close drawer
     router.back();
@@ -69,13 +78,48 @@ function DrawerContent() {
     {
       title: "Logout",
       icon: <LogoutIcon />,
-      onPress: () => {/* handle logout */},
+      onPress: () => {
+        handleLogout();
+      },
     },
   ];
 
-  useEffect(() => {
-    openPremiumSheet();
-  },[])
+//   useEffect(() => {
+//     openPremiumSheet();
+//   }, []);
+
+  const handleLogout = async () => {
+    try {
+      const response = await logout();
+      if (response?.s) {
+        showMessage({
+          message: "Logout successful",
+          type: "success",
+          icon: "success",
+          duration: 3000,
+        });
+
+        setTimeout(async () => {
+          await setLogout();
+          router.replace("/login");
+        }, 3000);
+      } else {
+        showMessage({
+          message: response.message || "Logout failed",
+          type: "danger",
+          icon: "danger",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      showMessage({
+        message: error.message || "Logout failed",
+        type: "danger",
+        icon: "danger",
+        duration: 3000,
+      });
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -87,8 +131,8 @@ function DrawerContent() {
         }}
       >
         <Image
-          source={{ 
-            uri: userInfo?.profile_picture 
+          source={{
+            uri: userInfo?.profile_picture,
           }}
           style={styles.image}
         />
@@ -102,7 +146,7 @@ function DrawerContent() {
           <TouchableOpacity
             key={index}
             onPress={item.onPress}
-            activeOpacity={0.7}
+            activeOpacity={1}
           >
             <View style={styles.drawerItem}>
               {item.icon}
@@ -163,8 +207,8 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: AppColors.scaffoldBackgroundColor,
   },
 });
