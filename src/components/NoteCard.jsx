@@ -2,8 +2,8 @@ import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { AppColors } from "../colors/AppColors";
 
-export default function NoteCard({ item, onPress, index }) {
-  const isLarge = index % 3 === 0; // Every third card will be large
+export default function NoteCard({ item, onPress, index = 0 }) {
+  const isLarge = typeof index === 'number' ? index % 3 === 0 : false;
 
   return (
     <Pressable

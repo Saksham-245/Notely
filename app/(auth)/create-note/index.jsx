@@ -4,7 +4,6 @@ import NoteScreen from "../../../src/components/NoteScreen";
 import { createNote } from "../../../src/api/http";
 import { showMessage } from "react-native-flash-message";
 import { Keyboard } from "react-native";
-import { useUserInfo } from "../../../src/hooks/useUserInfo";
 
 export default function CreateNote() {
   const router = useRouter();
@@ -12,26 +11,24 @@ export default function CreateNote() {
   const handleSubmit = async (values) => {
     Keyboard.dismiss();
     try {
-      const response = await createNote(
-        values.title,
-        values.content,
-        useUserInfo?.id
-      );
+      const response = await createNote(values.title, values.content);
       if (response?.s) {
-        // Navigate back first
-        router.back();
-        
-        // Then update params and show message
-        setTimeout(() => {
-          router.setParams({
-        createdNoteId: response?.note?.id,
-            timestamp: Date.now(),
-          });
-          showMessage({
-            message: "Note created successfully",
-            type: "success",
-          });
-        }, 100);
+        const noteId = response?.data?.note?.id || response?.note?.id; // Handle both response formats
+
+        // Show message first
+        showMessage({
+          message: "Note created successfully",
+          type: "success",
+        });
+
+        // Update params and navigate back
+        await router.replace({
+          pathname: "/home",
+          params: {
+            createdNoteId: noteId,
+            timestamp: Date.now()
+          }
+        });
       }
     } catch (error) {
       showMessage({

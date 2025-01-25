@@ -54,9 +54,11 @@ export default function Home() {
 
     try {
       const response = await getAllNotes(pageToFetch);
-      const newNotes = response?.data || [];
-      setTotalPages(response?.last_page || 1);
-      setHasMore(pageToFetch < (response?.last_page || 1));
+      const newNotes = response?.data?.notes || [];
+      const pagination = response?.data?.pagination;
+
+      setTotalPages(pagination?.totalPages || 1);
+      setHasMore(pagination?.hasNextPage || false);
 
       const filteredNotes = newNotes.filter(
         (note) => !deletedNoteIdsRef.current.has(note.id.toString())
@@ -161,20 +163,15 @@ export default function Home() {
 
         try {
           const response = await getAllNotes(1);
-          const newNotes = response?.data || [];
+          const newNotes = response?.data?.notes || [];
 
-          const newNote = newNotes.find(
-            (note) => note.id.toString() === params.createdNoteId.toString()
-          );
-
-          if (newNote) {
-            setNotes((prevNotes) => {
+          if (newNotes.length > 0) {
+            setNotes(prevNotes => {
               const filteredNotes = prevNotes.filter(
-                (note) => note.id.toString() !== params.createdNoteId.toString()
+                note => note.id.toString() !== params.createdNoteId.toString()
               );
-              return [newNote, ...filteredNotes];
+              return [newNotes[0], ...filteredNotes];
             });
-            setRefreshKey((prev) => prev + 1);
           }
         } catch (error) {
           console.error("Error fetching new note:", error);
@@ -183,15 +180,17 @@ export default function Home() {
 
       fetchLatestNote();
 
-      setTimeout(() => {
-        router.setParams({ createdNoteId: null });
-      }, 100);
+      router.replace({
+        pathname: "/home",
+        params: { createdNoteId: null }
+      });
     }
-  }, [params?.createdNoteId]);
+  }, [params?.createdNoteId, userInfo?.id]);
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item, index }) => (
     <NoteCard
       item={item}
+      index={index}
       onPress={() => {
         router.push({
           pathname: "/note/[id]",
@@ -234,19 +233,26 @@ export default function Home() {
   };
 
   const handleSearch = async () => {
-    if (!searchQuery.trim()) {
+    const trimmedQuery = searchQuery.trim();
+
+    // Clear results and return to normal notes list if query is empty
+    if (!trimmedQuery) {
       await fetchNotes(false, 1);
+      return;
+    }
+
+    // Only search if query is at least 2 characters
+    if (trimmedQuery.length < 2) {
       return;
     }
 
     setIsLoading(true);
     try {
-      const response = await searchNotes(searchQuery);
-      if (response?.notes) {
-        setNotes(response.notes.data || []);
-        setTotalPages(response.notes?.last_page || 1);
-        setHasMore(false);
-      }
+      const response = await searchNotes(trimmedQuery);
+      setNotes(response?.data?.notes || []);
+      const pagination = response?.data?.pagination;
+      setTotalPages(pagination?.totalPages || 1);
+      setHasMore(pagination?.hasNextPage || false);
     } catch (error) {
       console.error("Error searching notes:", error);
     } finally {
@@ -289,15 +295,27 @@ export default function Home() {
               appContent={
                 <View style={{ width: "100%", marginTop: -10 }}>
                   <TextInput
-                    placeholder="Enter a keyword"
+                    placeholder="Enter 3 or more characters"
                     mode="outlined"
                     style={styles.searchInput}
                     cursorColor="#000"
                     contentStyle={styles.searchInputText}
                     onChangeText={(text) => {
                       setSearchQuery(text);
-                      const timeoutId = setTimeout(() => {
-                        handleSearch();
+                      const timeoutId = setTimeout(async () => {
+                        if (!text.trim()) {
+                          // Show loading before fetching notes
+                          setIsLoading(true);
+                          try {
+                            await fetchNotes(false, 1);
+                          } catch (error) {
+                            console.error("Error fetching notes:", error);
+                          } finally {
+                            setIsLoading(false);
+                          }
+                        } else if (text.trim().length >= 2) {
+                          handleSearch();
+                        }
                       }, 500);
                       return () => clearTimeout(timeoutId);
                     }}
@@ -307,12 +325,18 @@ export default function Home() {
                         style={{ marginTop: 30 }}
                         color={"#000"}
                         rippleColor={"transparent"}
-                        onPress={() => {
+                        onPress={async () => {
                           if (searchQuery.trim()) {
                             setOpenSearch(false);
                             setSearchQuery("");
-                            setNotes([]);
-                            fetchNotes(false, 1);
+                            setIsLoading(true);
+                            try {
+                              await fetchNotes(false, 1);
+                            } catch (error) {
+                              console.error("Error fetching notes:", error);
+                            } finally {
+                              setIsLoading(false);
+                            }
                           } else {
                             setOpenSearch(false);
                           }
@@ -328,107 +352,118 @@ export default function Home() {
               rightContent={null}
             />
           )}
-          {isLoading && (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <ActivityIndicator
-                size="large"
-                color={AppColors.buttonColor}
+          <View style={{ flex: 1 }}>
+            {isLoading && (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: AppColors.scaffoldBackgroundColor,
+                  zIndex: 1
+                }}
+              >
+                <ActivityIndicator
+                  size="large"
+                  color={AppColors.buttonColor}
+                />
+              </View>
+            )}
+            {!isLoading && notes.length > 0 && (
+              <MasonryFlashList
+                data={notes}
+                numColumns={2}
+                showsVerticalScrollIndicator={false}
+                renderItem={renderItem}
+                contentContainerStyle={styles.listContainer}
+                estimatedItemSize={200}
+                keyExtractor={(item) => `note-${item.id}`}
+                extraData={[notes.length, params?.timestamp]}
+                disableAutoLayout={true}
+                maintainVisibleContentPosition={{
+                  minIndexForVisible: 0,
+                }}
+                onEndReached={() => {
+                  if (
+                    isFocused &&
+                    !isRefreshing &&
+                    !isLoading &&
+                    !isLoadingMore
+                  ) {
+                    setCanLoadMore(true);
+                  }
+                }}
+                onEndReachedThreshold={0.2}
+                onMomentumScrollEnd={() => {
+                  if (
+                    isFocused &&
+                    canLoadMore &&
+                    !isRefreshing &&
+                    !isLoading &&
+                    !isLoadingMore
+                  ) {
+                    loadMore();
+                  }
+                }}
+                ListFooterComponent={renderFooter}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={isRefreshing}
+                    onRefresh={handleRefresh}
+                  />
+                }
               />
-            </View>
-          )}
-          {!isLoading && notes.length > 0 && (
-            <MasonryFlashList
-              data={notes}
-              numColumns={2}
-              showsVerticalScrollIndicator={false}
-              renderItem={renderItem}
-              contentContainerStyle={styles.listContainer}
-              estimatedItemSize={6}
-              keyExtractor={(item) => `note-${item.id}-${refreshKey}`}
-              extraData={[notes.length, refreshKey]}
-              disableAutoLayout={true}
-              onEndReached={() => {
-                if (
-                  isFocused &&
-                  !isRefreshing &&
-                  !isLoading &&
-                  !isLoadingMore
-                ) {
-                  setCanLoadMore(true);
-                }
-              }}
-              onEndReachedThreshold={0.2}
-              onMomentumScrollEnd={() => {
-                if (
-                  isFocused &&
-                  canLoadMore &&
-                  !isRefreshing &&
-                  !isLoading &&
-                  !isLoadingMore
-                ) {
-                  loadMore();
-                }
-              }}
-              ListFooterComponent={renderFooter}
-              refreshControl={
-                <RefreshControl
-                  refreshing={isRefreshing}
-                  onRefresh={handleRefresh}
-                />
-              }
-            />
-          )}
-          {!isLoading && !searchQuery && notes.length === 0 && (
-            <>
-              <View style={styles.noData}>
-                {/* No Data */}
-                <Image source={require("../../assets/images/no_data.png")} />
-                <View style={{ height: 25 }} />
-                <View style={styles.textContainer}>
-                  <Text style={styles.textTitle}>Create Your First Note</Text>
-                  <Text style={styles.textSubtitle}>
-                    Add a note about anything (your thoughts on climate change,
-                    or your history essay) and share it with the world.
-                  </Text>
+            )}
+            {!isLoading && !searchQuery && notes.length === 0 && (
+              <>
+                <View style={styles.noData}>
+                  {/* No Data */}
+                  <Image source={require("../../assets/images/no_data.png")} />
+                  <View style={{ height: 25 }} />
+                  <View style={styles.textContainer}>
+                    <Text style={styles.textTitle}>Create Your First Note</Text>
+                    <Text style={styles.textSubtitle}>
+                      Add a note about anything (your thoughts on climate change,
+                      or your history essay) and share it with the world.
+                    </Text>
+                  </View>
                 </View>
+                <View style={styles.buttonContainer}>
+                  <CustomOrangeButton
+                    title="Create Note"
+                    onPress={() => router.push("/create-note")}
+                    buttonStyle={{ textTransform: "capitalize" }}
+                  />
+                  <TextButton
+                    onPress={() => router.push("/import-notes")}
+                    title={"Import Notes"}
+                  />
+                </View>
+              </>
+            )}
+            {!isLoading && searchQuery && notes.length === 0 && (
+              <View style={styles.noData}>
+                <Text style={styles.noDataText}>No results found</Text>
               </View>
-              <View style={styles.buttonContainer}>
-                <CustomOrangeButton
-                  title="Create Note"
-                  onPress={() => router.push("/create-note")}
-                  buttonStyle={{ textTransform: "capitalize" }}
-                />
-                <TextButton
-                  onPress={() => router.push("/import-notes")}
-                  title={"Import Notes"}
-                />
-              </View>
-            </>
-          )}
-          {!isLoading && searchQuery && notes.length === 0 && (
-            <View style={styles.noData}>
-              <Text style={styles.noDataText}>No results found</Text>
-            </View>
-          )}
-          {notes.length > 0 && (
-            <FAB
-              icon="plus"
-              color="#fff"
-              style={{
-                position: "absolute",
-                bottom: 20,
-                right: 20,
-                backgroundColor: AppColors.buttonColor,
-              }}
-              onPress={() => router.push("/create-note")}
-            />
-          )}
+            )}
+            {notes.length > 0 && (
+              <FAB
+                icon="plus"
+                color="#fff"
+                style={{
+                  position: "absolute",
+                  bottom: 20,
+                  right: 20,
+                  backgroundColor: AppColors.buttonColor,
+                }}
+                onPress={() => router.push("/create-note")}
+              />
+            )}
+          </View>
         </MainContainer>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
