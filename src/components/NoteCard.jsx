@@ -27,7 +27,7 @@ export default function NoteCard({ item, onPress, index }) {
       </View>
       <View style={styles.footer}>
         <Text style={styles.date}>
-          {new Date(item.updated_at).toLocaleDateString("en-US", {
+          {new Date(item.updatedAt).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
             year: "numeric",

@@ -24,7 +24,7 @@ export default function CreateNote() {
         // Then update params and show message
         setTimeout(() => {
           router.setParams({
-            createdNoteId: response?.note?.id,
+        createdNoteId: response?.note?.id,
             timestamp: Date.now(),
           });
           showMessage({

@@ -24,8 +24,8 @@ import { useAuth } from "../../src/context/AuthContext";
 
 export default function Login() {
   const router = useRouter();
-  const { setLogin, setLogout, setLoginRoute } = useAuth();
-  const [response, setResponse] = useState(null);
+  const { setLogin, setLoginRoute } = useAuth();
+  let response = null;
 
   const validate = (values) => {
     const errors = {};
@@ -40,8 +40,7 @@ export default function Login() {
 
   const handleLogin = async (values) => {
     try {
-      const response = await login(values.email, values.password);
-      setResponse(response);
+      response = await login(values.email, values.password);
       if (response?.s && response?.token) {
         const userInfo = {
           ...response.user,

@@ -18,7 +18,7 @@ export default function ViewNote() {
     const fetchNote = async () => {
       try {
         const response = await getNoteById(id);
-        setNote(response?.note);
+        setNote(response?.data?.note);
         setError(null);
       } catch (error) {
         console.error("Error fetching note:", error);
@@ -33,7 +33,7 @@ export default function ViewNote() {
 
   const handleSubmit = async (values) => {
     try {
-      const response = await updateNote(id, values.title, values.content, userInfo?.id);
+      const response = await updateNote(id, values.title, values.content);
       if (response?.s) {
         // Navigate back first
         router.back();
@@ -41,7 +41,7 @@ export default function ViewNote() {
         // Then update params and show message
         setTimeout(() => {
           router.setParams({
-            createdNoteId: response?.note?.id,
+            createdNoteId: response?.data?.id,
             timestamp: Date.now(),
           });
 

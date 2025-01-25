@@ -83,18 +83,18 @@ export default function EditProfile() {
     setIsSubmitting(true);
     try {
       const response = await updateUserInfo(
-        userInfo?.id, 
-        values.fullName, 
-        values.email, 
+        userInfo?.id,
+        values.fullName,
+        values.email,
         values.profile_picture
       );
-      
+
       if (response.s) {
         showMessage({
           message: response.message,
           type: "success"
         });
-        
+
         formRef.current?.resetForm({
           values: {
             fullName: values.fullName,
@@ -183,9 +183,9 @@ export default function EditProfile() {
               innerRef={formRef}
               validate={validateForm}
               initialValues={{
-                fullName: userInfo?.name || "",
+                fullName: userInfo?.username || "",
                 email: userInfo?.email || "",
-                profile_picture: userInfo?.profile_picture || "",
+                profile_picture: userInfo?.profileImageUrl || "",
               }}
               onSubmit={handleSubmit}
             >

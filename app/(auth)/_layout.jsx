@@ -132,12 +132,12 @@ function DrawerContent() {
       >
         <Image
           source={{
-            uri: userInfo?.profile_picture,
+            uri: userInfo?.profileImageUrl,
           }}
           style={styles.image}
         />
         <View style={styles.textContainer}>
-          <Text style={styles.username}>{userInfo?.name}</Text>
+          <Text style={styles.username}>{userInfo?.username}</Text>
           <Text style={styles.email}>{userInfo?.email}</Text>
         </View>
       </View>
