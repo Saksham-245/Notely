@@ -51,7 +51,7 @@ export default function EditProfile() {
         const response = await uploadImage(manipulatedImage.uri);
         setImageLoading(true);
         if (response.s) {
-          setFieldValue("profile_picture", response?.url);
+          setFieldValue("profile_picture", response?.data?.profileImageUrl);
           setImageLoading(false);
           showMessage({
             message: response?.message,
@@ -185,9 +185,6 @@ export default function EditProfile() {
 
     return errors;
   };
-
-  console.log(userInfo, 'userInfo');
-
 
   return (
     <TouchableOpacity

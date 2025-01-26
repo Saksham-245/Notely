@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import {
+    ActivityIndicator,
+  Image,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -17,10 +19,20 @@ import CustomOrangeButton from "../../src/components/CustomOrangeButton";
 import TextButton from "../../src/components/TextButton";
 import { Formik } from "formik";
 import { useRouter } from "expo-router";
-import { isValidEmail, isValidName, isValidPassword } from "../../src/utils/Utils";
+import {
+  isValidEmail,
+  isValidName,
+  isValidPassword,
+} from "../../src/utils/Utils";
+import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
+import { uploadImage } from "../../src/api/http";
+import { showMessage } from "react-native-flash-message";
 
 export default function SignUp() {
   const router = useRouter();
+  const [imageLoading, setImageLoading] = useState(false);
+
   const validate = (values) => {
     const errors = {};
     if (!values.fullName || !isValidName(values.fullName)) {
@@ -34,6 +46,54 @@ export default function SignUp() {
     }
     return errors;
   };
+
+  const handleImagePicker = async (setFieldValue) => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setImageLoading(true);
+        const manipulatedImage = await ImageManipulator.manipulateAsync(
+          result.assets[0].uri,
+          [{ resize: { width: 1000, height: 1000 } }],
+          { compress: 0.7, format: "jpeg" }
+        );
+
+        const response = await uploadImage(manipulatedImage.uri);
+        if (response.s) {
+          setFieldValue("profile_picture", response?.data?.profileImageUrl);
+          showMessage({
+            message: response?.message,
+            type: "success",
+            icon: "success",
+            duration: 3000,
+          });
+        } else {
+          showMessage({
+            message: response?.message,
+            type: "danger",
+            icon: "danger",
+            duration: 3000,
+          });
+        }
+      }
+    } catch (error) {
+      showMessage({
+        message: error?.message || "An error occurred while processing the image",
+        type: "danger",
+        icon: "danger",
+        duration: 3000,
+      });
+    } finally {
+      setImageLoading(false);
+    }
+  };
+
   return (
     <TouchableOpacity
       style={{ flex: 1 }}
@@ -57,7 +117,7 @@ export default function SignUp() {
             </View>
 
             <Formik
-              initialValues={{ fullName: "", email: "", password: "" }}
+              initialValues={{ fullName: "", email: "", password: "", profile_picture: "" }}
               validate={validate}
               onSubmit={(values) => console.log(values)}
             >
@@ -70,6 +130,7 @@ export default function SignUp() {
                 values,
                 dirty,
                 isValid,
+                setFieldValue,
               }) => (
                 <>
                   <ScrollView
@@ -77,6 +138,26 @@ export default function SignUp() {
                     showsVerticalScrollIndicator={false}
                   >
                     <View style={styles.formContainer}>
+                      <View style={styles.formGroup}>
+                        {imageLoading ? (
+                          <ActivityIndicator
+                            size="large"
+                            color={AppColors.buttonColor}
+                          />
+                        ) : (
+                          <TouchableOpacity
+                            onPress={() => handleImagePicker(setFieldValue)}
+                          >
+                            <Image
+                              source={
+                                values.profile_picture
+                                  && { uri: values.profile_picture }
+                              }
+                              style={styles.profileImage}
+                            />
+                          </TouchableOpacity>
+                        )}
+                      </View>
                       <View style={styles.formGroup}>
                         <Text style={styles.formLabel}>Full Name</Text>
                         <TextInput
@@ -86,7 +167,9 @@ export default function SignUp() {
                               borderWidth:
                                 errors.fullName && touched.fullName ? 1 : 0,
                               borderColor:
-                                errors.fullName && touched.fullName ? "red" : null,
+                                errors.fullName && touched.fullName
+                                  ? "red"
+                                  : null,
                             },
                           ]}
                           onChangeText={handleChange("fullName")}
@@ -95,7 +178,9 @@ export default function SignUp() {
                           placeholder="Enter your full name"
                         />
                         {errors.fullName && touched.fullName && (
-                          <Text style={styles.errorText}>{errors.fullName}</Text>
+                          <Text style={styles.errorText}>
+                            {errors.fullName}
+                          </Text>
                         )}
                       </View>
                       <View style={styles.formGroup}>
@@ -104,7 +189,8 @@ export default function SignUp() {
                           style={[
                             styles.formInput,
                             {
-                              borderWidth: errors.email && touched.email ? 1 : 0,
+                              borderWidth:
+                                errors.email && touched.email ? 1 : 0,
                               borderColor:
                                 errors.email && touched.email ? "red" : null,
                             },
@@ -128,7 +214,9 @@ export default function SignUp() {
                               borderWidth:
                                 errors.password && touched.password ? 1 : 0,
                               borderColor:
-                                errors.password && touched.password ? "red" : null,
+                                errors.password && touched.password
+                                  ? "red"
+                                  : null,
                             },
                           ]}
                           onChangeText={handleChange("password")}
@@ -138,7 +226,9 @@ export default function SignUp() {
                           placeholder="Enter your password"
                         />
                         {errors.password && touched.password && (
-                          <Text style={styles.errorText}>{errors.password}</Text>
+                          <Text style={styles.errorText}>
+                            {errors.password}
+                          </Text>
                         )}
                       </View>
                     </View>
@@ -220,5 +310,12 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 100,
+    alignSelf: "center",
+    backgroundColor: "#fff",
   },
 });

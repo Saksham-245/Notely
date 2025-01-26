@@ -84,7 +84,6 @@ export const login = async (email, password) => {
     const response = await http.post("auth/login", { email, password });
     return response.data;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -142,20 +141,55 @@ export const searchNotes = async (query) => {
 };
 
 export const uploadImage = async (image) => {
-  console.log(image, "image");
-  const formData = new FormData();
-  formData.append("profile_picture", {
-    uri: image,
-    type: image.split(".").pop(),
-    name: image.split("/").pop(),
-  });
+  try {
+    // Extract file name from uri
+    const fileName = image.split('/').pop();
 
-  const response = await http.post("user/upload", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-  return response.data;
+    // Determine the mime type
+    let type = 'image/jpeg';
+    if (fileName.endsWith('.png')) {
+      type = 'image/png';
+    } else if (fileName.endsWith('.gif')) {
+      type = 'image/gif';
+    }
+
+    // Create form data
+    const formData = new FormData();
+    formData.append('profile_picture', {
+      uri: image,
+      name: fileName,
+      type: type,
+    });
+
+    console.log('Upload payload:', {
+      uri: image,
+      name: fileName,
+      type: type
+    });
+
+    const response = await http.post('users/upload/picture', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      transformRequest: (data) => {
+        return data;
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Upload error details:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+      headers: error.response?.headers
+    });
+
+    return {
+      s: false,
+      message: error.response?.data?.message || 'Image upload failed. Please try again.'
+    };
+  }
 };
 
 export const updateUser = async (userId, fullName, email, profilePicture) => {
