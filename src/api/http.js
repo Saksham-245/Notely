@@ -88,11 +88,12 @@ export const login = async (email, password) => {
   }
 };
 
-export const signup = async (fullName, email, password) => {
-  const response = await http.post("auth/signup", {
-    name: fullName,
+export const signup = async (fullName, email, password, profilePicture) => {
+  const response = await http.post("auth/register", {
+    username: fullName,
     email,
     password,
+    profileImageUrl: profilePicture,
   });
   return response.data;
 };
@@ -161,12 +162,6 @@ export const uploadImage = async (image) => {
       type: type,
     });
 
-    console.log('Upload payload:', {
-      uri: image,
-      name: fileName,
-      type: type
-    });
-
     const response = await http.post('users/upload/picture', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -199,4 +194,13 @@ export const updateUser = async (userId, fullName, email, profilePicture) => {
     profile_picture: profilePicture,
   });
   return response.data;
+};
+
+export const verifyEmail = async (token) => {
+  try {
+    const response = await http.get(`/auth/verify-email?token=${token}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
 };

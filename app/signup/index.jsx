@@ -26,7 +26,7 @@ import {
 } from "../../src/utils/Utils";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
-import { uploadImage } from "../../src/api/http";
+import { signup, uploadImage } from "../../src/api/http";
 import { showMessage } from "react-native-flash-message";
 
 export default function SignUp() {
@@ -94,6 +94,36 @@ export default function SignUp() {
     }
   };
 
+  const handleSubmit = async (values) => {
+    try {
+        const response = await signup(values.fullName, values.email, values.password, values.profile_picture);
+
+    if (response?.s) {
+        showMessage({
+        message: response?.message,
+        type: "success",
+        icon: "success",
+        duration: 3000,
+      });
+      router.replace('/login')
+    } else {
+        showMessage({
+            message: response?.message,
+            type: "danger",
+            icon: "danger",
+            duration: 3000,
+          });
+    }
+  } catch (error) {
+    showMessage({
+      message: error?.message || "An error occurred while processing the image",
+      type: "danger",
+      icon: "danger",
+      duration: 3000,
+    });
+  }
+  };
+
   return (
     <TouchableOpacity
       style={{ flex: 1 }}
@@ -119,7 +149,7 @@ export default function SignUp() {
             <Formik
               initialValues={{ fullName: "", email: "", password: "", profile_picture: "" }}
               validate={validate}
-              onSubmit={(values) => console.log(values)}
+              onSubmit={(values) => handleSubmit(values)}
             >
               {({
                 handleChange,
@@ -200,6 +230,7 @@ export default function SignUp() {
                           value={values.email}
                           keyboardType="email-address"
                           placeholder="Enter your email"
+                          autoCapitalize="none"
                         />
                         {errors.email && touched.email && (
                           <Text style={styles.errorText}>{errors.email}</Text>

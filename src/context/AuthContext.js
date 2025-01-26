@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setAuthToken, updateUser } from '../api/http';
-import { showMessage } from "react-native-flash-message";
 
 const AuthContext = createContext(null);
 
@@ -39,15 +38,32 @@ export const AuthProvider = ({ children }) => {
     initializeAuth();
   }, []);
 
-  const setLogin = async (userInfo) => {
-    setIsLoading(true);
+  const setLogin = async (userData) => {
     try {
-      await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
-      setAuthToken(userInfo.token);
+      // Verify we have the token
+      if (!userData.token) {
+        throw new Error('Token is missing');
+      }
+
+      // Set the auth token first
+      setAuthToken(userData.token);
+
+      // Store user info
+      await AsyncStorage.setItem('userInfo', JSON.stringify(userData));
+
+      // Update state
+      setUserInfo(userData);
       setIsAuthenticated(true);
-      setUserInfo(userInfo);
-    } finally {
-      setIsLoading(false);
+
+      return true;
+    } catch (error) {
+      console.error('Error setting login:', error);
+      // Clear any partial data on error
+      await AsyncStorage.removeItem('userInfo');
+      setUserInfo(null);
+      setIsAuthenticated(false);
+      setAuthToken(null);
+      return false;
     }
   };
 

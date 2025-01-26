@@ -307,6 +307,7 @@ export default function EditProfile() {
                             onChangeText={handleChange("email")}
                             onBlur={handleBlur("email")}
                             value={values.email}
+                            disabled={true}
                             keyboardType="email-address"
                             placeholder="Enter your email"
                           />
