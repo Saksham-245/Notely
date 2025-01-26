@@ -54,11 +54,15 @@ export default function Login() {
           showMessage({
             message: "Invalid credentials",
             type: "danger",
+            icon: "danger",
+            duration: 3000,
           });
         } else {
           showMessage({
             message: "Something went wrong",
             type: "danger",
+            icon: "danger",
+            duration: 3000,
           });
         }
       }
@@ -66,6 +70,8 @@ export default function Login() {
       showMessage({
         message: error?.message,
         type: "danger",
+        icon: "danger",
+        duration: 3000,
       });
     }
   };

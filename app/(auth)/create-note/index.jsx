@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from 'react';
 import { useRouter } from "expo-router";
 import NoteScreen from "../../../src/components/NoteScreen";
 import { createNote } from "../../../src/api/http";
@@ -7,19 +7,26 @@ import { Keyboard } from "react-native";
 
 export default function CreateNote() {
   const router = useRouter();
+  const formRef = useRef(null);
 
   const handleSubmit = async (values) => {
     Keyboard.dismiss();
     try {
       const response = await createNote(values.title, values.content);
       if (response?.s) {
-        const noteId = response?.data?.note?.id || response?.note?.id; // Handle both response formats
+        const noteId = response?.data?.note?.id || response?.note?.id;
 
-        // Show message first
         showMessage({
           message: "Note created successfully",
           type: "success",
+          icon: "success",
+          duration: 3000,
         });
+
+        // Reset form
+        if (formRef.current) {
+          formRef.current.resetForm();
+        }
 
         // Update params and navigate back
         await router.replace({
@@ -34,6 +41,8 @@ export default function CreateNote() {
       showMessage({
         message: error?.message || "Failed to create note",
         type: "danger",
+        icon: "danger",
+        duration: 3000,
       });
     }
   };
@@ -44,6 +53,7 @@ export default function CreateNote() {
       onSubmit={handleSubmit}
       submitButtonText="Create Note"
       resetOnUnmount={true}
+      formRef={formRef}
     />
   );
 }

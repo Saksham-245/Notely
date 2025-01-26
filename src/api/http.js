@@ -43,6 +43,7 @@ const handleTokenError = async (errorCode) => {
         ? "Invalid session. Please login again."
         : "Session not found. Please login.",
       type: "danger",
+      icon: "danger",
       duration: 2000,
     });
 
@@ -158,7 +159,7 @@ export const uploadImage = async (image) => {
 };
 
 export const updateUser = async (userId, fullName, email, profilePicture) => {
-  const response = await http.put(`users/update-profile`, {
+  const response = await http.put(`users/profile`, {
     name: fullName,
     email,
     profile_picture: profilePicture,

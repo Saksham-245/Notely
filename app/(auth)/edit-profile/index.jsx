@@ -56,12 +56,16 @@ export default function EditProfile() {
           showMessage({
             message: response?.message,
             type: "success",
+            icon: "success",
+            duration: 3000,
           });
         } else {
           setImageLoading(false);
           showMessage({
             message: response?.message,
             type: "danger",
+            icon: "danger",
+            duration: 3000,
           });
         }
       }
@@ -69,6 +73,8 @@ export default function EditProfile() {
       showMessage({
         message: error?.message || "An error occurred while processing the image",
         type: "danger",
+        icon: "danger",
+        duration: 3000,
       });
     } finally {
       setImageLoading(false);
@@ -80,8 +86,31 @@ export default function EditProfile() {
       return;
     }
 
+    // Additional validation before submission
+    if (values.fullName.length < 3) {
+      showMessage({
+        message: "Username must be at least 3 characters",
+        type: "danger",
+        icon: "danger",
+        duration: 3000,
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
+      // Only send changed values to the API
+      const changedValues = {};
+      if (values.fullName !== userInfo.username && values.fullName.length >= 3) {
+        changedValues.fullName = values.fullName;
+      }
+      if (values.email !== userInfo.email) {
+        changedValues.email = values.email;
+      }
+      if (values.profile_picture !== userInfo.profileImageUrl) {
+        changedValues.profile_picture = values.profile_picture;
+      }
+
       const response = await updateUserInfo(
         userInfo?.id,
         values.fullName,
@@ -92,7 +121,9 @@ export default function EditProfile() {
       if (response.s) {
         showMessage({
           message: response.message,
-          type: "success"
+          type: "success",
+          icon: "success",
+          duration: 3000,
         });
 
         formRef.current?.resetForm({
@@ -105,14 +136,18 @@ export default function EditProfile() {
         });
       } else {
         showMessage({
-          message: response.message,
-          type: "danger"
+          message: 'Profile update failed',
+          type: "danger",
+          icon: "danger",
+          duration: 3000,
         });
       }
     } catch (error) {
       showMessage({
         message: error.message || "An error occurred",
-        type: "danger"
+        type: "danger",
+        icon: "danger",
+        duration: 3000,
       });
     } finally {
       setIsSubmitting(false);
@@ -128,17 +163,31 @@ export default function EditProfile() {
 
   const validateForm = (values) => {
     const errors = {};
+
+    // Username validation (minimum 3 characters)
+    if (!values.fullName) {
+      errors.fullName = "Full name is required";
+    } else if (values.fullName.length < 3) {
+      errors.fullName = "Full name must be at least 3 characters";
+    }
+
+    // Email validation
+    if (!values.email) {
+      errors.email = "Email is required";
+    } else if (!values.email.includes('@')) {
+      errors.email = "Please enter a valid email address";
+    }
+
+    // Profile picture validation
     if (!values.profile_picture) {
       errors.profile_picture = "Profile picture is required";
     }
-    if (!values.fullName) {
-      errors.fullName = "Full name is required";
-    }
-    if (!values.email) {
-      errors.email = "Email is required";
-    }
+
     return errors;
   };
+
+  console.log(userInfo, 'userInfo');
+
 
   return (
     <TouchableOpacity

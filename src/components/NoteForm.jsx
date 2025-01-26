@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -21,10 +21,15 @@ export default function NoteForm({
   formRef,
   resetOnUnmount = false
 }) {
+  const localFormRef = useRef(null);
+
   useEffect(() => {
     return () => {
-      if (resetOnUnmount && formRef.current) {
-        formRef.current.resetForm();
+      if (resetOnUnmount) {
+        const currentRef = formRef || localFormRef;
+        if (currentRef.current) {
+          currentRef.current.resetForm();
+        }
       }
     };
   }, [resetOnUnmount]);
@@ -40,6 +45,15 @@ export default function NoteForm({
     return errors;
   };
 
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      await onSubmit(values);
+      resetForm();
+    } catch (error) {
+      console.error("Form submission error:", error);
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : null}
@@ -53,8 +67,8 @@ export default function NoteForm({
         <Formik
           initialValues={initialValues}
           validate={validate}
-          onSubmit={onSubmit}
-          innerRef={formRef}
+          onSubmit={handleSubmit}
+          innerRef={formRef || localFormRef}
         >
           {({
             handleChange,
@@ -75,6 +89,7 @@ export default function NoteForm({
                       styles.formInput,
                       {
                         fontFamily: "Nunito-Bold",
+                        textAlign: 'left',
                       },
                     ]}
                     onChangeText={handleChange("title")}
@@ -83,6 +98,7 @@ export default function NoteForm({
                     placeholder="Enter note title"
                     numberOfLines={1}
                     ellipsizeMode="tail"
+                    textAlignVertical="center"
                   />
                   {errors.title && touched.title && (
                     <Text style={styles.errorText}>{errors.title}</Text>

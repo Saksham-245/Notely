@@ -48,6 +48,8 @@ export default function ViewNote() {
           showMessage({
             message: response?.message,
             type: "success",
+            icon: "success",
+            duration: 3000,
           });
         }, 100);
       }

@@ -17,10 +17,10 @@ export default function NoteScreen({
   error,
   id,
   resetOnUnmount = false,
+  formRef
 }) {
   const router = useRouter();
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-  const formRef = React.useRef(null);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -78,6 +78,8 @@ export default function NoteScreen({
           showMessage({
             message: response?.message || "Note deleted successfully",
             type: "success",
+            icon: "success",
+            duration: 3000,
           });
         }, 100);
       }
@@ -85,6 +87,8 @@ export default function NoteScreen({
       showMessage({
         message: error?.message || "Failed to delete note",
         type: "danger",
+        icon: "danger",
+        duration: 3000,
       });
     }
   };
@@ -100,7 +104,10 @@ export default function NoteScreen({
             color="#000"
             rippleColor={"transparent"}
             onPress={() => {
-              formRef.current?.resetForm();
+              // Reset form when navigating back
+              if (resetOnUnmount && formRef?.current) {
+                formRef.current.resetForm();
+              }
               router.back();
             }}
             size={Platform.OS === "ios" ? 30 : 26}

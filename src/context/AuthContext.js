@@ -60,13 +60,12 @@ export const AuthProvider = ({ children }) => {
 
         const updatedUserInfo = {
           ...parsedCurrentInfo,
-          name: fullName,
-          email: email,
-          profile_picture: profilePicture
+          ...(fullName !== parsedCurrentInfo.username && { username: fullName }),
+          ...(email !== parsedCurrentInfo.email && { email: email }),
+          ...(profilePicture !== parsedCurrentInfo.profileImageUrl && { profileImageUrl: profilePicture })
         };
 
         await AsyncStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
-
         setUserInfo(updatedUserInfo);
 
         return {
