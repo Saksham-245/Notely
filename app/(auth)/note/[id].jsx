@@ -1,10 +1,9 @@
 import React from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { getNoteById, updateNote } from "../../../src/api/http";
 import NoteScreen from "../../../src/components/NoteScreen";
 import { showMessage } from "react-native-flash-message";
-import { useUserInfo } from "../../../src/hooks/useUserInfo";
 
 export default function ViewNote() {
   const { id } = useLocalSearchParams();
@@ -12,30 +11,32 @@ export default function ViewNote() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
-  const { userInfo } = useUserInfo();
 
-  useEffect(() => {
-    const fetchNote = async () => {
-      try {
-        const response = await getNoteById(id);
-        setNote(response?.data?.note);
-        setError(null);
-      } catch (error) {
-        console.error("Error fetching note:", error);
-        setError("Failed to load note");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const fetchNote = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getNoteById(id);
+      setNote(response?.data?.note);
+      setError(null);
+    } catch (error) {
+      console.error("Error fetching note:", error);
+      setError("Failed to load note");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    fetchNote();
-  }, [id]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchNote();
+    }, [id])
+  );
 
   const handleSubmit = async (values) => {
     try {
       const response = await updateNote(id, values.title, values.content);
       if (response?.s) {
-        // Navigate back first
+        // Navigate back
         router.back();
 
         // Then update params and show message

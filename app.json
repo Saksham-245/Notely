@@ -27,7 +27,21 @@
         "height": 100,
         "resizeMode": "contain",
         "image": "./assets/images/icon.png"
-      }
+      },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "notely",
+              "host": "*",
+              "pathPrefix": "/verify-email"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "ios": {
       "bundleIdentifier": "com.sakshammathur.notely",
@@ -37,6 +51,17 @@
         "height": 100,
         "backgroundColor": "#F8EEE2",
         "image": "./assets/images/icon.png"
+      },
+      "associatedDomains": [
+        "applinks:apinotely.sakshammathur.in"
+      ]
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "0cf0b997-bdfa-4450-9770-804999e5ddb2"
       }
     }
   }

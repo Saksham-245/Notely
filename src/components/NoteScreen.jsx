@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Keyboard, Platform, StyleSheet, Text } from "react-native";
+import {
+  ActivityIndicator,
+  Keyboard,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import MainContainer from "./MainContainer";
 import CustomAppBar from "./CustomAppBar";
 import { Appbar } from "react-native-paper";
@@ -7,6 +14,7 @@ import { useRouter, useNavigation } from "expo-router";
 import NoteForm from "./NoteForm";
 import { showMessage } from "react-native-flash-message";
 import { deleteNote } from "../api/http";
+import { AppColors } from "../colors/AppColors";
 
 export default function NoteScreen({
   title,
@@ -17,7 +25,7 @@ export default function NoteScreen({
   error,
   id,
   resetOnUnmount = false,
-  formRef
+  formRef,
 }) {
   const router = useRouter();
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -45,7 +53,23 @@ export default function NoteScreen({
 
   const renderContent = () => {
     if (isLoading) {
-      return <Text style={styles.loadingText}>Loading...</Text>;
+      return (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: AppColors.scaffoldBackgroundColor,
+            zIndex: 1,
+          }}
+        >
+          <ActivityIndicator size="large" color={AppColors.buttonColor} />
+        </View>
+      );
     }
     if (error) {
       return <Text style={styles.errorText}>{error}</Text>;

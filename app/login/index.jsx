@@ -59,7 +59,7 @@ export default function Login() {
           });
         } else {
           showMessage({
-            message: "Something went wrong",
+            message: response?.message,
             type: "danger",
             icon: "danger",
             duration: 3000,

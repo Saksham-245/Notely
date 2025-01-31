@@ -255,6 +255,7 @@ export default function EditProfile() {
                       showsVerticalScrollIndicator={false}
                     >
                       <View style={styles.formContainer}>
+                        {console.log(values)}
                         <View style={styles.formGroup}>
                           {imageLoading ? (
                             <ActivityIndicator size="large" color={AppColors.buttonColor} />
@@ -263,7 +264,7 @@ export default function EditProfile() {
                               onPress={() => handleImagePicker(setFieldValue)}
                             >
                               <Image
-                                source={{ uri: values.profile_picture }}
+                                source={{ uri: Platform.OS === "android" && process.env.NODE_ENV === "development" ? values.profile_picture?.replace("localhost", "10.0.2.2") : values.profile_picture }}
                                 style={styles.profileImage}
                               />
                             </TouchableOpacity>

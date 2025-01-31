@@ -145,44 +145,47 @@ export const uploadImage = async (image) => {
   try {
     // Extract file name from uri
     const fileName = image.split('/').pop();
-
     // Determine the mime type
     let type = 'image/jpeg';
-    if (fileName.endsWith('.png')) {
-      type = 'image/png';
-    } else if (fileName.endsWith('.gif')) {
-      type = 'image/gif';
+    if (fileName.toLowerCase().endsWith('.png')) {
+      return;
+    } else if (fileName.toLowerCase().endsWith('.gif')) {
+      return;
     }
 
-    // Create form data
+    // Create form data with proper structure for Android
     const formData = new FormData();
-    formData.append('profile_picture', {
-      uri: image,
+    const fileData = {
+      uri: Platform.OS === 'android' ? image : image, // Removed file:// prefix
       name: fileName,
       type: type,
-    });
+    };
+    formData.append('profile_picture', fileData);
 
-    const response = await http.post('users/upload/picture', formData, {
+    // Custom config for the request
+    const config = {
       headers: {
         'Content-Type': 'multipart/form-data',
+        'Accept': 'application/json',
       },
-      transformRequest: (data) => {
-        return data;
-      },
-    });
+      timeout: 60000, // Extended timeout to 60 seconds
+      transformRequest: (data) => data,
+    };
 
+    const response = await http.post('users/upload/picture', formData, config);
     return response.data;
   } catch (error) {
-    console.error('Upload error details:', {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status,
-      headers: error.response?.headers
-    });
+    let errorMessage = 'Image upload failed. Please try again.';
+    if (error.message === 'Network Error') {
+      errorMessage = 'Network connection error. Please check your internet connection and try again.';
+    } else if (error.code === 'ECONNABORTED') {
+      errorMessage = 'Upload timed out. Please try again with a smaller image.';
+    }
 
     return {
-      s: false,
-      message: error.response?.data?.message || 'Image upload failed. Please try again.'
+      success: false,
+      message: error.response?.data?.message || errorMessage,
+      technicalDetails: error.message, // Added technical details
     };
   }
 };

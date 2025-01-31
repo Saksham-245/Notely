@@ -23,6 +23,7 @@ import NoteCard from "../../src/components/NoteCard";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useUserInfo } from "../../src/hooks/useUserInfo";
+import { showMessage } from "react-native-flash-message";
 
 export default function Home() {
   const [openSearch, setOpenSearch] = useState(false);
@@ -71,7 +72,17 @@ export default function Home() {
         return filteredNotes;
       });
     } catch (error) {
-      console.error("Error fetching notes:", error);
+      // Don't show error message if it's a handled token error
+      if (!error.isHandledTokenError) {
+        console.error("Error fetching notes:", error);
+        showMessage({
+          message: "Failed to fetch notes",
+          type: "danger",
+          icon: "danger",
+          duration: 3000,
+        });
+      }
+      // Token errors are already handled by the HTTP interceptor
     } finally {
       loadingState(false);
     }

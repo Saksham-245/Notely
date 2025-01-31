@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -121,6 +122,7 @@ function DrawerContent() {
     }
   };
 
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
@@ -131,9 +133,7 @@ function DrawerContent() {
         }}
       >
         <Image
-          source={{
-            uri: userInfo?.profileImageUrl,
-          }}
+          source={{ uri: Platform.OS === "android" && process.env.NODE_ENV === "development" ? userInfo?.profileImageUrl?.replace("localhost", "10.0.2.2") : userInfo?.profileImageUrl }}
           style={styles.image}
         />
         <View style={styles.textContainer}>

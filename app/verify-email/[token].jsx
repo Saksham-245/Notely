@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { useLocalSearchParams } from 'expo-router';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { verifyEmail } from '../../src/api/http';
 import { useAuth } from '../../src/context/AuthContext';
 import { showMessage } from "react-native-flash-message";

@@ -44,6 +44,9 @@ export default function SignUp() {
     if (!values.password || !isValidPassword(values.password)) {
       errors.password = "Password must be at least 8 characters";
     }
+    if (!values.profile_picture) {
+      errors.profile_picture = "Profile picture is required";
+    }
     return errors;
   };
 
@@ -268,7 +271,7 @@ export default function SignUp() {
                     <CustomOrangeButton
                       title="Create Account"
                       onPress={handleSubmit}
-                      disabled={!isValid || !dirty}
+                      disabled={!isValid || !dirty || !values.profile_picture}
                     />
                     <TextButton
                       onPress={() => router.push("/login")}
