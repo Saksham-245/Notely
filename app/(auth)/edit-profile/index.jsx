@@ -255,7 +255,6 @@ export default function EditProfile() {
                       showsVerticalScrollIndicator={false}
                     >
                       <View style={styles.formContainer}>
-                        {console.log(values)}
                         <View style={styles.formGroup}>
                           {imageLoading ? (
                             <ActivityIndicator size="large" color={AppColors.buttonColor} />
