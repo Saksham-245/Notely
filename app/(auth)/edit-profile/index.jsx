@@ -24,6 +24,7 @@ import { showMessage } from "react-native-flash-message";
 import * as ImageManipulator from "expo-image-manipulator";
 import { useAuth } from "../../../src/context/AuthContext";
 import { AppColors } from "../../../src/colors/AppColors";
+import { normalizeImageUrl } from "../../../src/utils/Utils";
 
 export default function EditProfile() {
   const router = useRouter();
@@ -263,8 +264,10 @@ export default function EditProfile() {
                               onPress={() => handleImagePicker(setFieldValue)}
                             >
                               <Image
-                                source={{ uri: Platform.OS === "android" && process.env.NODE_ENV === "development" ? values.profile_picture?.replace("localhost", "10.0.2.2") : values.profile_picture }}
-                                style={styles.profileImage}
+                                source={{
+                                  uri: normalizeImageUrl(values.profile_picture),
+                                }}
+                                style={[styles.profileImage, { backgroundColor: '#f0f0f0' }]}
                               />
                             </TouchableOpacity>
                           )}

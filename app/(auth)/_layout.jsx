@@ -19,6 +19,7 @@ import { useAuth } from "../../src/context/AuthContext";
 import { useBottomSheet } from "../../src/context/BottomSheetContext";
 import { logout } from "../../src/api/http";
 import { showMessage } from "react-native-flash-message";
+import { normalizeImageUrl } from "../../src/utils/Utils";
 
 export default function DrawerLayout() {
   return (
@@ -133,8 +134,10 @@ function DrawerContent() {
         }}
       >
         <Image
-          source={{ uri: Platform.OS === "android" && process.env.NODE_ENV === "development" ? userInfo?.profileImageUrl?.replace("localhost", "10.0.2.2") : userInfo?.profileImageUrl }}
-          style={styles.image}
+          source={{
+            uri: normalizeImageUrl(userInfo?.profileImageUrl),
+          }}
+          style={[styles.image, { backgroundColor: '#f0f0f0' }]}
         />
         <View style={styles.textContainer}>
           <Text style={styles.username}>{userInfo?.username}</Text>

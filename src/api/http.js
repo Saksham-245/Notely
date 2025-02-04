@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { showMessage } from "react-native-flash-message";
 import { EventRegister } from 'react-native-event-listeners';
+import { normalizeImageUrl } from "../utils/Utils";
 
 export const API_URL =
   Platform.OS === "android" && process.env.NODE_ENV === "development"
@@ -143,36 +144,42 @@ export const searchNotes = async (query) => {
 
 export const uploadImage = async (image) => {
   try {
-    // Extract file name from uri
+    // Extract file name from uri and handle file:// prefix
     const fileName = image.split('/').pop();
+    const imageUri = Platform.OS === 'ios' ? image.replace('file://', '') : image;
+
     // Determine the mime type
     let type = 'image/jpeg';
     if (fileName.toLowerCase().endsWith('.png')) {
-      return;
+      type = 'image/png';
     } else if (fileName.toLowerCase().endsWith('.gif')) {
-      return;
+      type = 'image/gif';
     }
 
-    // Create form data with proper structure for Android
+    // Create form data
     const formData = new FormData();
     const fileData = {
-      uri: Platform.OS === 'android' ? image : image, // Removed file:// prefix
+      uri: imageUri,
       name: fileName,
       type: type,
     };
     formData.append('profile_picture', fileData);
 
-    // Custom config for the request
     const config = {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Accept': 'application/json',
       },
-      timeout: 60000, // Extended timeout to 60 seconds
-      transformRequest: (data) => data,
+      timeout: 60000,
     };
 
     const response = await http.post('users/upload/picture', formData, config);
+
+    // Normalize the URL in the response using the utility function
+    if (response.data?.data?.profileImageUrl) {
+      response.data.data.profileImageUrl = normalizeImageUrl(response.data.data.profileImageUrl);
+    }
+
     return response.data;
   } catch (error) {
     let errorMessage = 'Image upload failed. Please try again.';
@@ -185,7 +192,7 @@ export const uploadImage = async (image) => {
     return {
       success: false,
       message: error.response?.data?.message || errorMessage,
-      technicalDetails: error.message, // Added technical details
+      technicalDetails: error.message,
     };
   }
 };

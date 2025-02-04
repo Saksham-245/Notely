@@ -13,3 +13,16 @@ export const isValidUsername = (username) => {
 export const isValidName = (name) => {
   return name.length >= 3;
 };
+
+export const normalizeImageUrl = (url) => {
+  if (!url) return null;
+  return url
+    .replace("localhost:3000", "apinotely.sakshammathur.in")
+    .replace("10.0.2.2:3000", "apinotely.sakshammathur.in")
+    .replace("http://", "https://");
+};
+
+export const normalizeImageUri = (uri) => {
+  if (!uri) return null;
+  return Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+};
